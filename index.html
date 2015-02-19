@@ -42,13 +42,14 @@
         var id = "-JhWr1YifZ_GoNuUE1ig";
         var username;
         if (false) {
-            // var username = $.cookie('sucker');
             // $.cookie('sucker', username, { expires: 7, path: '/' });
             username = "Jonny";
         } else {
+            var username = $.cookie('sucker');
             while (!username) {
                 username = prompt("Please input a username.");
             }
+            $.cookie('sucker', username, { expires: 7, path: '/' });
         }
 
         var myApp = angular.module("myApp", ["firebase"]);
@@ -65,7 +66,7 @@
 
                     round.$loaded().then(function () {
                         if (!round[$scope.question.Q]) {
-                          round[$scope.question.Q] = {"choices": {"computer": $scope.question.A}};
+                            round[$scope.question.Q] = {"choices": {"computer": $scope.question.A}};
                         }
                         round.$save(); //save question to firebase
 
