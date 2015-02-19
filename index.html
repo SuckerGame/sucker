@@ -6,16 +6,17 @@
         <script src="https://cdn.firebase.com/libs/angularfire/0.9.2/angularfire.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+        <script src="js/game.js"></script>
         <link rel='stylesheet' href='https://www.firebase.com/resources/tutorial/css/example.css'/>
         <link rel='stylesheet' href='css/style.css'/>
     </head>
 
     <body ng-controller="MyController">
-        <div class='example-chat l-demo-container'>
-            <header >Game {{ game.$id }}</header>
+        <div id="app" class='example-chat l-demo-container hide'>
+            <header>Welcome {{ username }} : Game {{ game.$id }}</header>
 
             <div class='example-chat-toolbar' ng-model='question'>
-                {{ question.Q }}
+                {{ question }}
             </div>
 
             <ul id='example-messages' class='example-chat-messages'>
@@ -38,12 +39,14 @@
             </footer>
         </div>
 
+        <input type="button" value="Start Game" ng-click="startGame()"/>
+
     <script>
         var id = "-JhWr1YifZ_GoNuUE1ig";
         var username;
+
         if (document.URL.indexOf(".html") >= 0) {
-            // $.cookie('sucker', username, { expires: 7, path: '/' });
-            username = "Jonny";
+            username = "LocalUser";
         } else {
             var username = $.cookie('sucker');
             while (!username) {
@@ -51,62 +54,87 @@
             }
             $.cookie('sucker', username, { expires: 7, path: '/' });
         }
-
+        var game;
         var myApp = angular.module("myApp", ["firebase"]);
         myApp.controller('MyController', ['$scope', '$firebase', 
             function($scope, $firebase) {
+                $scope.username = username;
                 var gameReference = new Firebase("https://sucker.firebaseio.com/game/" + id);
-                $scope.game = $firebase(gameReference).$asObject();          
+                $scope.game = $firebase(gameReference).$asObject();
+                $scope.game.$loaded().then(function() {
+                    game = new Game(username, $scope.game, 3);
+                    $.getJSON("https://sucker.firebaseio.com/questions.json", 
+                        function(data, status, xhr) {
+                            // TODO: randomize, but make sure it only gets set *once*
+                            var questions = [];
+                            for (var i = 0; i < 4; ++i) {
+                                questions[i] = data[i];
+                            }
 
-                var round = $firebase(gameReference.child("rounds")).$asObject();
-                $scope.question = "Loading question..."; // get question object
-                var questionReference = new Firebase("https://sucker.firebaseio.com/questions/0");
-                questionReference.on("value", function(snapshot) {
-                    $scope.question = snapshot.val(); //get question
-
-                    round.$loaded().then(function () {
-                        if (!round[$scope.question.Q]) {
-                            round[$scope.question.Q] = {"choices": {"computer": $scope.question.A}};
-                        }
-                        round.$save(); //save question to firebase
-
-                        var choiceRef = new Firebase("https://sucker.firebaseio.com/game/" + id + "/rounds/" + $scope.question.Q + "/choices");
-                        $scope.choices = $firebase(choiceRef).$asObject();
-                    });
+                            game.setQuestions(questions);
+                            $scope.question = game.getQuestion();
+                            game.setStateCallbacks({
+                                "PREGAME" : undefined,
+                                "INPUT_LIE" : $scope.showEnterLie,
+                                "VOTE" : $scope.showChoices,
+                                "DISPLAY_VOTES" : undefined,
+                                "GAMEOVER" : undefined
+                            });
+                        });
                 });
+
+                $scope.showEnterLie = function() {
+                    console.log("$scope.showEnterLie");
+
+                    $("#options_container").addClass("hide");
+                    $("#lie").removeClass("hide");
+                    $scope.question = game.getQuestion();
+                    $scope.choices = game.getChoices();
+                    $scope.inputLie = "";
+                }
 
                 $scope.enterLie = function(e, force) {
                     if (force || e.keyCode === 13 && $scope.inputLie) {
-                        $scope.choices[username] = $scope.lie = $scope.inputLie ? $scope.inputLie : "No Answer";
-                        $scope.choices.$save();
+
+                        $scope.choices = game.getChoices();
+                        $scope.choices[username] = $scope.inputLie;
+                        $scope.game.$save();
                         if (!force) {
                             $scope.showChoices();
-                            $scope.inputLie = undefined;
                         }
                     }
                 }
 
                 $scope.showChoices = function() {
+                    console.log("$scope.showChoices");
+                    
+                    $scope.choices = game.getChoices();
                     $scope.enterLie(undefined, true);
                     $("#options_container").removeClass("hide");
                     $("#lie").addClass("hide");
                 }
 
+                $scope.startGame = function() {
+                    console.log("Starting game..");
+                    $("#app").removeClass("hide");
+                    game.start();
+                }
+
                 $scope.vote = function(e) {
-                    // alert("Not implemented yet.);")
+                    alert("Not implemented yet.);")
                     console.log(e);
-                    for (var a in $scope.choices) {
-                        if ($scope.choices[a] == e.choice) {
-                            console.log("true");
-                            console.log(!$scope.choices[a].hasOwnProperty("voters"));
-                            if (!$scope.choices[a].hasOwnProperty("voters")) {
-                                $scope.choices[a].voters = username;
-                            } else {
-                                $scope.choices[a].voters.push(username);
-                            }
-                            $scope.choices.$save();
-                        }
-                    }
+                    // for (var a in $scope.choices) {
+                    //     if ($scope.choices[a] == e.choice) {
+                    //         console.log("true");
+                    //         console.log(!$scope.choices[a].hasOwnProperty("voters"));
+                    //         if (!$scope.choices[a].hasOwnProperty("voters")) {
+                    //             $scope.choices[a].voters = username;
+                    //         } else {
+                    //             $scope.choices[a].voters.push(username);
+                    //         }
+                    //         $scope.choices.$save();
+                    //     }
+                    // }
                 }
       }]);
     </script>
