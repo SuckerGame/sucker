@@ -72,12 +72,11 @@
                             }
 
                             game.setQuestions(questions);
-                            $scope.question = game.getQuestion();
                             game.setStateCallbacks({
                                 "PREGAME" : undefined,
                                 "INPUT_LIE" : $scope.showEnterLie,
                                 "VOTE" : $scope.showChoices,
-                                "DISPLAY_VOTES" : undefined,
+                                "DISPLAY_RESULTS" : undefined,
                                 "GAMEOVER" : undefined
                             });
                         });
@@ -99,9 +98,6 @@
                         $scope.choices = game.getChoices();
                         $scope.choices[username] = $scope.inputLie;
                         $scope.game.$save();
-                        if (!force) {
-                            $scope.showChoices();
-                        }
                     }
                 }
 
@@ -120,20 +116,11 @@
                 }
 
                 $scope.vote = function(e) {
-                    alert("Not implemented yet.);")
-                    console.log(e);
-                    // for (var a in $scope.choices) {
-                    //     if ($scope.choices[a] == e.choice) {
-                    //         console.log("true");
-                    //         console.log(!$scope.choices[a].hasOwnProperty("voters"));
-                    //         if (!$scope.choices[a].hasOwnProperty("voters")) {
-                    //             $scope.choices[a].voters = username;
-                    //         } else {
-                    //             $scope.choices[a].voters.push(username);
-                    //         }
-                    //         $scope.choices.$save();
-                    //     }
-                    // }
+                    // TODO: Only allow one vote per question
+                    if (game.getAnswer() == e.choice) {
+                        game.addPoints(100);
+                        console.log("Correct! +100 points");
+                    }
                 }
       }]);
     </script>

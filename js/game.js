@@ -37,7 +37,7 @@ var Game = function(user, gameObject, maxNumRounds) {
     }
 
     if (DEBUG || !gameObject.round) {
-        gameObject.round = 0;
+        gameObject.round = -1;
     }
 
     if (DEBUG || !gameObject.points) {
@@ -61,7 +61,7 @@ Game.State = {
     PREGAME : "PREGAME",
     INPUT_LIE : "INPUT_LIE",
     VOTE : "VOTE",
-    DISPLAY_VOTES : "DISPLAY_VOTES",
+    DISPLAY_RESULTS : "DISPLAY_RESULTS",
     GAMEOVER : "GAMEOVER",
 }
 
@@ -78,11 +78,19 @@ Game.prototype.setStateCallbacks = function(callbacks) {
  */
 Game.prototype.setQuestions = function(questions) {
     this.questions = questions;
+    console.log("questions");
+    console.log(questions);
     for (var i = 0; i < questions.length; ++i) {
         var question = questions[i];
-        this.questions[i].Q = question.Q.replace(".", "");
-        if (!this.game.questions[question.Q.replace(".", "")]) {
-            this.game.questions[question.Q.replace(".", "")] = 
+        var questionKey = question.Q.replace(".", "");
+        this.questions[i].Q = questionKey;
+
+        if (!this.game.questions) {
+            this.game.questions = {};            
+        }
+
+        if (!this.game.questions[questionKey]) {
+            this.game.questions[questionKey] = 
                 {"choices": {"computer": question.A}};
         }
     }
@@ -110,10 +118,10 @@ Game.prototype.start = function() {
  * @return An object with the next question data.
  */
 Game.prototype.getNextQuestion = function() {
+    this.round = this.round + 1;
     var next = this.questions[this.round].Q;
-    this.round = this.game.round = this.round + 1; // TODO: Risky?
+    this.game.round = this.round; // TODO: Risky?
     this.game.$save();
-    console.log(next);
     return next;
 }
 
@@ -121,15 +129,30 @@ Game.prototype.getNextQuestion = function() {
  * Gets the current question.
  */
 Game.prototype.getQuestion = function() {
-    return this.questions[this.round == 0 ? 0 : this.round - 1].Q; // TODO: Logic =\
+    return this.questions[this.round].Q;
+}
+
+/*
+ * Gets the answer for the current question..
+ */
+Game.prototype.getAnswer = function() {
+    return this.questions[this.round].A;
 }
 
 /*
  * TODO: Hacked
  */ 
 Game.prototype.getChoices = function() {
-    // console.log(this.game.questions[this.questions[this.round == 0 ? 0 : this.round - 1].Q]);
-    return this.game.questions[this.questions[this.round == 0 ? 0 : this.round - 1].Q].choices;
+    // console.log(this.game.questions[this.questions[this.round].Q]);
+    return this.game.questions[this.questions[this.round].Q].choices;
+}
+
+/**
+ *
+ */
+Game.prototype.addPoints = function(points) {
+    this.game.points[this.user] += points;
+    this.game.$save();
 }
 
 /*
@@ -140,19 +163,18 @@ Game.prototype.changeState = function(state) {
     console.log("State is: " + state);
     switch (state) {
         case Game.State.INPUT_LIE:
+            this.getNextQuestion();
             this.timer.start(time, function() { 
                 that.changeState(Game.State.VOTE) 
             });
             break;
         case Game.State.VOTE:
             this.timer.start(time, function() { 
-                that.changeState(Game.State.DISPLAY_VOTES) 
+                that.changeState(Game.State.DISPLAY_RESULTS) 
             });
             break;
-        case Game.State.DISPLAY_VOTES:
+        case Game.State.DISPLAY_RESULTS:
             if (this.round < this.questions.length) {
-                this.getNextQuestion();
-                
                 this.timer.start(time, function() { 
                     that.changeState(Game.State.INPUT_LIE) 
                 });
