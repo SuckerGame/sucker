@@ -20,12 +20,10 @@
             </div>
 
             <ul id='example-messages' class='example-chat-messages'>
-                <li ng-repeat='user in game.users'>
-                <strong class='example-chat-username'>{{ user }}</strong>
-                    {{ lie }}
-                </li>
-                
-                <hr/>
+                <div id="answer">
+                    The correct answer is <strong>{{ answer }}</strong>
+                    <hr/>
+                </div>
 
                 <div id="options_container" class="hide">
                     <div ng-repeat="(_, choice) in choices">
@@ -76,7 +74,7 @@
                                 "PREGAME" : undefined,
                                 "INPUT_LIE" : $scope.showEnterLie,
                                 "VOTE" : $scope.showChoices,
-                                "DISPLAY_RESULTS" : undefined,
+                                "DISPLAY_RESULTS" : $scope.showResults,
                                 "GAMEOVER" : undefined
                             });
                         });
@@ -85,8 +83,9 @@
                 $scope.showEnterLie = function() {
                     console.log("$scope.showEnterLie");
 
-                    $("#options_container").addClass("hide");
+                    $("#answer").addClass("hide");
                     $("#lie").removeClass("hide");
+                    $("#options_container").addClass("hide");
                     $scope.question = game.getQuestion();
                     $scope.choices = game.getChoices();
                     $scope.inputLie = "";
@@ -105,8 +104,18 @@
                     console.log("$scope.showChoices");
                     
                     $scope.choices = game.getChoices();
-                    $("#options_container").removeClass("hide");
+                    $("#answer").addClass("hide");
                     $("#lie").addClass("hide");
+                    $("#options_container").removeClass("hide");
+                }
+
+                $scope.showResults = function() {
+                    console.log("$scope.showResults");
+                    $scope.answer = game.getAnswer();
+
+                    $("#answer").removeClass("hide");
+                    $("#lie").removeClass("hide");
+                    $("#options_container").addClass("hide");
                 }
 
                 $scope.startGame = function() {
