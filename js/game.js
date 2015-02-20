@@ -1,5 +1,7 @@
 var that; // TODO: :(
 
+var DEBUG = true;
+
 /**
  * Timer class handles the timing of the game.
  *
@@ -30,15 +32,15 @@ var Game = function(user, gameObject, maxNumRounds) {
     this.user = user;
     this.game = gameObject;
 
-    if (!gameObject.state) {
+    if (DEBUG || !gameObject.state) {
         gameObject.state = Game.State.PREGAME;
     }
 
-    if (!gameObject.round) {
+    if (DEBUG || !gameObject.round) {
         gameObject.round = 0;
     }
 
-    if (!gameObject.points) {
+    if (DEBUG || !gameObject.points) {
         gameObject.points = {};
     }
 
@@ -88,13 +90,13 @@ Game.prototype.setQuestions = function(questions) {
 }
 
 
-var time = 5000;
+var time = DEBUG ? 5000 : 10000;
 
 /*
  * Starts a game.
  */
 Game.prototype.start = function() {
-    if (true || this.game.state == Game.State.PREGAME) { // TODO: Demo purpose
+    if (DEBUG || this.game.state == Game.State.PREGAME) { // TODO: Demo purpose
         this.changeState(Game.State.INPUT_LIE);
     } else {
         console.log("Game has already been started.");
