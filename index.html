@@ -93,8 +93,8 @@
                     $scope.inputLie = "";
                 }
 
-                $scope.enterLie = function(e, force) {
-                    if (force || e.keyCode === 13 && $scope.inputLie) {
+                $scope.enterLie = function(e) {
+                    if (e.keyCode === 13 && $scope.inputLie) {
 
                         $scope.choices = game.getChoices();
                         $scope.choices[username] = $scope.inputLie;
@@ -109,7 +109,6 @@
                     console.log("$scope.showChoices");
                     
                     $scope.choices = game.getChoices();
-                    $scope.enterLie(undefined, true);
                     $("#options_container").removeClass("hide");
                     $("#lie").addClass("hide");
                 }
