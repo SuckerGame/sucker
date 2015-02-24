@@ -73,6 +73,7 @@ Game.prototype.setTimes = function(times) {
 
 /**
  * @param currentTime The current time (using Date.getTime()).
+ * @return Number of seconds left until the next state.
  */
 Game.prototype.update = function(currentTime) {
     if (this.game.state == Game.State.PREGAME) {
@@ -92,13 +93,17 @@ Game.prototype.update = function(currentTime) {
         }
     }
 
-    console.log("closestTime: " + closestTime + " minDiff: " + minDiff);
-
     this.state = this.game.state = this.game.times[closestTime].state;
     this.round = this.game.round = this.game.times[closestTime].round;
     console.log("state: " + this.state + " round: " + this.round);
     this.game.$save();
     this.stateCallbacks[this.game.state]();
+
+
+    var next = parseInt(closestTime) + 10000;
+    var timeTillNextState = Math.floor((next - currentTime) / 1000);
+    // console.log("derp: " + derp + "next: " + next + " currentTime: " + currentTime);
+    return timeTillNextState;
 }
 
 /*

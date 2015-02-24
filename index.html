@@ -34,6 +34,9 @@
 
             <footer>
                 <input id="lie" ng-model='inputLie' ng-keydown="enterLie($event)" type='text' id='messageInput'  placeholder='Type a lie...'>
+                <div>
+                    Timer: <span id="time">10</span>
+                </div>
             </footer>
         </div>
 
@@ -57,7 +60,8 @@
         var update = function() {
             console.log("update");
             if (game) {
-                game.update(new Date().getTime());
+                var timer = game.update(new Date().getTime());
+                $("#time").html(timer);
             }
         }
         setInterval(update, 750);
