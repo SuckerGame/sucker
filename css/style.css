@@ -9,3 +9,12 @@
 h1 {
   font-size: 75px;
 }
+
+input[type="button"] {
+  font-size: 20px;
+  background-color: #00CCFF;
+}
+
+input[type="button"]:hover {
+  opacity: 0.6;
+}
