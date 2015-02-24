@@ -46,7 +46,7 @@
         var id = "-JhWr1YifZ_GoNuUE1ig";
         var username;
 
-        if (document.URL.indexOf(".html") >= 0) {
+        if (document.URL.indexOf("file:") >= 0) {
             username = "LocalUser";
         } else {
             var username = $.cookie('sucker');
