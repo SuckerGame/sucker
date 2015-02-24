@@ -3,23 +3,6 @@ var that; // TODO: :(
 var DEBUG = true;
 
 /**
- * Timer class handles the timing of the game.
- *
- * @constructor
- */
-var Timer = function() {
-}  
-
-/**
- * Start a timer.
- * @param duration {int} Number of milliseconds.
- * @param callback {function} The function to call when the timer is over.
- */
-Timer.prototype.start = function(duration, callback) {  
-    setTimeout(callback, duration);
-}  
-
-/**
  * Game class models a Sucker game.
  *
  * TODO: Remove dependency on Firebase. (sync is super convenient).
@@ -51,7 +34,6 @@ var Game = function(user, gameObject, maxNumRounds) {
     this.round = gameObject.round;
 
     this.questions = [];
-    this.timer = new Timer(); // TODO: This needs more info
     this.stateCallbacks = [];
 
     this.game.$save();
@@ -65,12 +47,58 @@ Game.State = {
     GAMEOVER : "GAMEOVER",
 }
 
+/**
+ * @return if the game has already started.
+ */
+Game.prototype.isStarted = function() {
+    return this.game.state != Game.State.PREGAME;
+}
+
 /*
  * @param callbacks An array of callback functions. Functions should
  *                  be in the same order the State enums are declared.
  */
 Game.prototype.setStateCallbacks = function(callbacks) {
     this.stateCallbacks = callbacks;
+}
+
+/**
+ * @param times A dictionary of time data that holds what state
+ *              and round it is (and when).
+ */
+Game.prototype.setTimes = function(times) {
+    this.game.times = times;
+    this.game.$save();
+}
+
+/**
+ * @param currentTime The current time (using Date.getTime()).
+ */
+Game.prototype.update = function(currentTime) {
+    if (this.game.state == Game.State.PREGAME) {
+        this.game.state = Game.State.INPUT_LIE;
+    }
+
+    var times = Object.keys(this.game.times);
+    var closestTime = times[0];
+    var minDiff = currentTime - closestTime;
+    
+    var length = times.length;
+    for (var i = 0; i < length; ++i) {
+        var diff = currentTime - times[i];
+        if (diff >= 0 && diff < minDiff) {
+            closestTime = times[i];
+            minDiff = diff;
+        }
+    }
+
+    console.log("closestTime: " + closestTime + " minDiff: " + minDiff);
+
+    this.state = this.game.state = this.game.times[closestTime].state;
+    this.round = this.game.round = this.game.times[closestTime].round;
+    console.log("state: " + this.state + " round: " + this.round);
+    this.game.$save();
+    this.stateCallbacks[this.game.state]();
 }
 
 /*
@@ -95,20 +123,6 @@ Game.prototype.setQuestions = function(questions) {
         }
     }
     this.game.$save();
-}
-
-
-var time = DEBUG ? 5000 : 10000;
-
-/*
- * Starts a game.
- */
-Game.prototype.start = function() {
-    if (DEBUG || this.game.state == Game.State.PREGAME) { // TODO: Demo purpose
-        this.changeState(Game.State.INPUT_LIE);
-    } else {
-        console.log("Game has already been started.");
-    }
 }
 
 /*
@@ -152,38 +166,5 @@ Game.prototype.getChoices = function() {
  */
 Game.prototype.addPoints = function(points) {
     this.game.points[this.user] += points;
-    this.game.$save();
-}
-
-/*
- * @param state A valid Game.State.
- */
-Game.prototype.changeState = function(state) {
-    this.game.state = state;
-    console.log("State is: " + state);
-    switch (state) {
-        case Game.State.INPUT_LIE:
-            this.getNextQuestion();
-            this.timer.start(time, function() { 
-                that.changeState(Game.State.VOTE) 
-            });
-            break;
-        case Game.State.VOTE:
-            this.timer.start(time, function() { 
-                that.changeState(Game.State.DISPLAY_RESULTS) 
-            });
-            break;
-        case Game.State.DISPLAY_RESULTS:
-            if (this.round < this.questions.length) {
-                this.timer.start(time, function() { 
-                    that.changeState(Game.State.INPUT_LIE) 
-                });
-            }
-            break;
-        case Game.State.GAMEOVER:
-            break;
-    }
-
-    this.stateCallbacks[state]();
     this.game.$save();
 }

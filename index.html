@@ -53,6 +53,15 @@
             $.cookie('sucker', username, { expires: 7, path: '/' });
         }
         var game;
+        
+        var update = function() {
+            console.log("update");
+            if (game) {
+                game.update(new Date().getTime());
+            }
+        }
+        setInterval(update, 750);
+
         var myApp = angular.module("myApp", ["firebase"]);
         myApp.controller('MyController', ['$scope', '$firebase', 
             function($scope, $firebase) {
@@ -121,7 +130,28 @@
                 $scope.startGame = function() {
                     console.log("Starting game..");
                     $("#app").removeClass("hide");
-                    game.start();
+                    var date = new Date();
+                    var time = date.getTime();
+
+                    var times = {};
+                    // for each round
+                    // TODO: remove magic numero 4
+                    for (var round = 0; round < 4; ++round) {
+                        if (round) {time += 10000;}
+                        times[time] = {state: Game.State.INPUT_LIE, round: round};
+
+                        time += 10000;
+                        times[time] = {state: Game.State.VOTE, round: round};
+
+                        time += 10000;
+                        times[time] = {state: Game.State.DISPLAY_RESULTS, round: round};
+                    }
+
+                    // GAME_OVER
+                    time += 10000;
+                    times[time] = {state: Game.State.GAMEOVER, round: 4}; // TODO: magic #
+                    console.log(times);
+                    game.setTimes(times);
                 }
 
                 $scope.vote = function(e) {
