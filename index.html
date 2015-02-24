@@ -40,7 +40,12 @@
             </footer>
         </div>
 
-        <input type="button" value="Start Game" ng-click="startGame()"/>
+        <div id="startButton" style="text-align:center">
+          <h1>
+            Sucker
+          </h1>
+          <input type="button" value="Start Game" ng-click="startGame()"/>
+        </div>
 
     <script>
         var id = "-JhWr1YifZ_GoNuUE1ig";
@@ -56,7 +61,7 @@
             $.cookie('sucker', username, { expires: 7, path: '/' });
         }
         var game;
-        
+
         var update = function() {
             console.log("update");
             if (game) {
@@ -67,14 +72,14 @@
         setInterval(update, 750);
 
         var myApp = angular.module("myApp", ["firebase"]);
-        myApp.controller('MyController', ['$scope', '$firebase', 
+        myApp.controller('MyController', ['$scope', '$firebase',
             function($scope, $firebase) {
                 $scope.username = username;
                 var gameReference = new Firebase("https://sucker.firebaseio.com/game/" + id);
                 $scope.game = $firebase(gameReference).$asObject();
                 $scope.game.$loaded().then(function() {
                     game = new Game(username, $scope.game, 3);
-                    $.getJSON("https://sucker.firebaseio.com/questions.json", 
+                    $.getJSON("https://sucker.firebaseio.com/questions.json",
                         function(data, status, xhr) {
                             // TODO: randomize, but make sure it only gets set *once*
                             var questions = [];
@@ -115,7 +120,7 @@
 
                 $scope.showChoices = function() {
                     console.log("$scope.showChoices");
-                    
+
                     $scope.choices = game.getChoices();
                     $("#answer").addClass("hide");
                     $("#lie").addClass("hide");
@@ -134,6 +139,7 @@
                 $scope.startGame = function() {
                     console.log("Starting game..");
                     $("#app").removeClass("hide");
+                    $("#startButton").addClass("hide");
                     var date = new Date();
                     var time = date.getTime();
 
