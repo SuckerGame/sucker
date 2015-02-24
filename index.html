@@ -101,7 +101,7 @@
                     $("#options_container").addClass("hide");
                     $scope.question = game.getQuestion();
                     $scope.choices = game.getChoices();
-                    $scope.inputLie = "";
+                    // $scope.inputLie = ""; TODO: Clear only on new rounds..
                 }
 
                 $scope.enterLie = function(e) {
@@ -127,7 +127,7 @@
                     $scope.answer = game.getAnswer();
 
                     $("#answer").removeClass("hide");
-                    $("#lie").removeClass("hide");
+                    $("#lie").addClass("hide");
                     $("#options_container").addClass("hide");
                 }
 
