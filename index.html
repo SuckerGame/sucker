@@ -21,29 +21,27 @@
 
             <ul id='example-messages' class='example-chat-messages'>
                 <div id="answer">
-                    The correct answer is <strong>{{ answer }}</strong>
+                    The correct answer is: <strong>{{ answer }}</strong>
                     <hr/>
                 </div>
 
                 <div id="options_container" class="hide">
                     <div ng-repeat="(_, choice) in choices">
-                        <input type="button" value="{{ choice }} " class="button" ng-click="vote(this)"/>
+                        <input id="displayLies" type="button" value="{{ choice }} " class="button" ng-click="vote(this)"/>
                     </div>
                 </div>
             </ul>
 
             <footer>
                 <input id="lie" ng-model='inputLie' ng-keydown="enterLie($event)" type='text' id='messageInput'  placeholder='Type a lie...'>
-                <div>
+                <div style="font-weight:bold">
                     Timer: <span id="time">10</span>
                 </div>
             </footer>
         </div>
 
         <div id="startButton" style="text-align:center">
-          <h1>
-            Sucker
-          </h1>
+          <h1>Sucker</h1>
           <input type="button" value="Start Game" ng-click="startGame()"/>
         </div>
 
