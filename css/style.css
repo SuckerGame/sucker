@@ -11,7 +11,32 @@
 }
 
 #app {
-  background-color: #1abc9c;
+  background-color: #acacac;
+}
+
+#options_container input {
+  background: #dddddd;
+  border-radius: 25px;
+}
+
+#options_container input:nth-child(1) {
+  background-color: #27ae60;
+}
+
+#options_container input:nth-child(2) {
+  background-color: #2b86c2;
+}
+
+#options_container input:nth-child(3) {
+  background-color: #e74c3c;
+}
+
+#options_container input:nth-child(4) {
+  background-color: #d35400;
+}
+
+#options_container input:nth-child(5) {
+  background-color: #f1c40f;
 }
 
 h1 {
@@ -20,7 +45,6 @@ h1 {
 
 input[type="button"] {
   font-size: 20px;
-  background-color: #2ecc71;
 }
 
 input[type="button"]:hover {
