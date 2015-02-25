@@ -104,15 +104,14 @@
                     $("#options_container").addClass("hide");
                     $scope.question = game.getQuestion();
                     $scope.choices = game.getChoices();
-                    $scope.inputLie = "";
                 }
 
                 $scope.enterLie = function(e) {
                     if (e.keyCode === 13 && $scope.inputLie) {
-
                         $scope.choices = game.getChoices();
                         $scope.choices[username] = $scope.inputLie;
                         $scope.game.$save();
+                        $scope.inputLie = "";
                     }
                 }
 
@@ -155,7 +154,7 @@
                         times[time] = {state: Game.State.DISPLAY_RESULTS, round: round};
                     }
 
-                    // GAME_OVER
+                    // GAMEOVER
                     time += 10000;
                     times[time] = {state: Game.State.GAMEOVER, round: 4}; // TODO: magic #
                     console.log(times);
