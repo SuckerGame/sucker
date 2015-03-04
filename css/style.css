@@ -11,32 +11,51 @@
 }
 
 #app {
-  background-color: #acacac;
+  background-color: #ededed;
+}
+
+#inputs {
+  text-align: center;
+  vertical-align: middle;
 }
 
 #options_container input {
+  width: auto;
+  margin-top: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4285;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
   background: #dddddd;
-  border-radius: 25px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #fff;
 }
 
 #options_container input:nth-child(1) {
-  background-color: #27ae60;
+  background-color: #337ab7;
 }
 
 #options_container input:nth-child(2) {
-  background-color: #2b86c2;
+  background-color: #5cb85c;
 }
 
 #options_container input:nth-child(3) {
-  background-color: #e74c3c;
+  background-color: #5bc0de;
 }
 
 #options_container input:nth-child(4) {
-  background-color: #d35400;
+  background-color: #f0ad4e;
 }
 
 #options_container input:nth-child(5) {
-  background-color: #f1c40f;
+  background-color: #d9534f;
 }
 
 h1 {
