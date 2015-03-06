@@ -13,6 +13,14 @@
     </head>
 
     <body ng-controller="MyController">
+        <input type="button" value="Start Game" ng-click="startGame()"/>
+
+        <div id="login">
+          <h1>Sucker</h1>
+          <input type="text" ng-model='input_username' placeholder="Enter a username to join the game."/>
+          <input type="button" value="Join Game" ng-click="onJoinGameClicked()"/>
+        </div>
+
         <div id="app" class='example-chat l-demo-container hide'>
             <header>Welcome {{ username }} : Game {{ game.$id }}</header>
 
@@ -46,25 +54,32 @@
                 </div>
             </footer>
         </div>
-
-        <div id="startButton" style="text-align:center">
-          <h1>Sucker</h1>
-          <input type="button" value="Start Game" ng-click="startGame()"/>
-        </div>
-
     <script>
+        var showLogin = function(show) {
+            if (show) {
+                $("#login").removeClass("hide");
+                $("#app").addClass("hide");
+            } else {
+                $("#login").addClass("hide");                
+                $("#app").removeClass("hide");                
+            }
+        }
+
         var id = "-JhWr1YifZ_GoNuUE1ig";
         var username;
+        showLogin(true);
 
+        // Check if a username exists
         if (document.URL.indexOf(".html") >= 0) {
             username = "LocalUser";
+            showLogin(false);
         } else {
-            var username = $.cookie('sucker');
-            while (!username) {
-                username = prompt("Please input a username.");
+            username = $.cookie('sucker');
+            if (username) {
+                showLogin(false);
             }
-            $.cookie('sucker', username, { expires: 7, path: '/' });
         }
+
         var game;
 
         var update = function() {
@@ -85,6 +100,12 @@
                 var gameReference = new Firebase("https://sucker.firebaseio.com/game/" + id);
                 $scope.game = $firebase(gameReference).$asObject();
                 $scope.game.$loaded().then(function() {
+                    if (username) {
+                        $scope.joinGame();
+                    }
+                });
+
+                $scope.joinGame = function() {
                     game = new Game(username, $scope.game, 3);
                     $scope.users = game.users;
                     console.log(game.users);
@@ -106,7 +127,19 @@
                             });
                         }
                     );
-                });
+                }
+
+                $scope.onJoinGameClicked = function() {
+                    var input = $scope.input_username;
+                    if (input) {
+                        username = input;
+                        $.cookie('sucker', username, { expires: 7, path: '/' });
+                        showLogin(false);
+                        $scope.joinGame();
+                    } else {
+                        alert("You need a username.");
+                    }
+                }
 
                 $scope.startGame = function() {
                     console.log("Starting game..");
