@@ -71,7 +71,7 @@
             console.log("update");
             if (game) {
                 var timer = game.update(new Date().getTime());
-                $("#time").html(timer);
+                $("#time").html(Math.max(0, timer));
             }
         }
         setInterval(update, 750);
