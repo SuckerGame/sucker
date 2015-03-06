@@ -15,7 +15,7 @@ var Game = function(user, gameObject, maxNumRounds) {
     this.user = user;
     this.game = gameObject;
 
-    if (DEBUG || !gameObject.users) {
+    if (!gameObject.users) {
         gameObject.users = {};
     }
 
@@ -27,7 +27,7 @@ var Game = function(user, gameObject, maxNumRounds) {
         gameObject.state = Game.State.PREGAME;
     }
 
-    if (DEBUG || !gameObject.round) {
+    if (!gameObject.round) {
         gameObject.round = -1;
     }
 
@@ -172,4 +172,5 @@ Game.prototype.getChoices = function() {
 Game.prototype.addPoints = function(points) {
     this.game.users[this.user] += points;
     this.game.$save();
+    return this.game.users;
 }

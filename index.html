@@ -79,6 +79,8 @@
         var myApp = angular.module("myApp", ["firebase"]);
         myApp.controller('MyController', ['$scope', '$firebase',
             function($scope, $firebase) {
+                var addPoints = 0;
+
                 $scope.username = username;
                 var gameReference = new Firebase("https://sucker.firebaseio.com/game/" + id);
                 $scope.game = $firebase(gameReference).$asObject();
@@ -105,54 +107,6 @@
                         }
                     );
                 });
-
-                $scope.showEnterLie = function() {
-                    console.log("$scope.showEnterLie");
-
-                    $("#waiting").addClass("hide");
-                    $("#answer").addClass("hide");
-                    $("#lie").removeClass("hide");
-                    $("#options_container").addClass("hide");
-                    $scope.question = game.getQuestion();
-                    $scope.choices = game.getChoices();
-                }
-
-                $scope.showNothing = function() {
-                    $("#waiting").removeClass("hide");
-                    $("#answer").addClass("hide");
-                    $("#lie").addClass("hide");
-                    $("#options_container").addClass("hide");
-                }
-
-                $scope.enterLie = function(e) {
-                    if (e.keyCode === 13 && $scope.inputLie) {
-                        $scope.choices = game.getChoices();
-                        $scope.choices[username] = $scope.inputLie;
-                        $scope.game.$save();
-                        $scope.inputLie = "";
-                        $scope.showNothing();
-                    }
-                }
-
-                $scope.showChoices = function() {
-                    console.log("$scope.showChoices");
-
-                    $scope.choices = game.getChoices();
-                    $("#waiting").addClass("hide");
-                    $("#answer").addClass("hide");
-                    $("#lie").addClass("hide");
-                    $("#options_container").removeClass("hide");
-                }
-
-                $scope.showResults = function() {
-                    console.log("$scope.showResults");
-                    $scope.answer = game.getAnswer();
-
-                    $("#waiting").addClass("hide");
-                    $("#answer").removeClass("hide");
-                    $("#lie").addClass("hide");
-                    $("#options_container").addClass("hide");
-                }
 
                 $scope.startGame = function() {
                     console.log("Starting game..");
@@ -183,16 +137,66 @@
                     game.setTimes(times);
                 }
 
+                $scope.showEnterLie = function() {
+                    console.log("$scope.showEnterLie");
+
+                    $("#waiting").addClass("hide");
+                    $("#answer").addClass("hide");
+                    $("#lie").removeClass("hide");
+                    $("#options_container").addClass("hide");
+                    $scope.question = game.getQuestion();
+                    $scope.choices = game.getChoices();
+                }
+
+                $scope.enterLie = function(e) {
+                    if (e.keyCode === 13 && $scope.inputLie) {
+                        $scope.choices = game.getChoices();
+                        $scope.choices[username] = $scope.inputLie;
+                        $scope.game.$save();
+                        $scope.inputLie = "";
+                        $scope.showNothing();
+                    }
+                }
+
+                $scope.showNothing = function() {
+                    $("#waiting").removeClass("hide");
+                    $("#answer").addClass("hide");
+                    $("#lie").addClass("hide");
+                    $("#options_container").addClass("hide");
+                }
+
+                $scope.showChoices = function() {
+                    console.log("$scope.showChoices");
+
+                    $scope.choices = game.getChoices();
+                    $("#waiting").addClass("hide");
+                    $("#answer").addClass("hide");
+                    $("#lie").addClass("hide");
+                    $("#options_container").removeClass("hide");
+                }
+
                 $scope.vote = function(e) {
                     // TODO: Only allow one vote per question
                     if (game.getAnswer() == e.choice) {
-                        game.addPoints(100);
-                        console.log("Correct! +100 points");
+                        addPoints = 100;
                     } else {
                         console.log("Wrong answer.");
                     }
                     $scope.showNothing();
                 }
+
+                $scope.showResults = function() {
+                    console.log("$scope.showResults");
+                    $scope.users = game.addPoints(addPoints);
+                    addPoints = 0;
+                    $scope.answer = game.getAnswer();
+
+                    $("#waiting").addClass("hide");
+                    $("#answer").removeClass("hide");
+                    $("#lie").addClass("hide");
+                    $("#options_container").addClass("hide");
+                }
+
       }]);
     </script>
     </body>
