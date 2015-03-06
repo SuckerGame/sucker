@@ -176,11 +176,8 @@
                 }
 
                 $scope.vote = function(e) {
-                    // TODO: Only allow one vote per question
                     if (game.getAnswer() == e.choice) {
                         addPoints = 100;
-                    } else {
-                        console.log("Wrong answer.");
                     }
                     $scope.showNothing();
                 }
