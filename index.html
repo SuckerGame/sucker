@@ -21,6 +21,10 @@
             </div>
 
             <ul id='inputs'>
+                <div id="waiting" class="hide">
+                    Waiting for other players...
+                </div>
+                
                 <div id="answer">
                     The correct answer is: <strong>{{ answer }}</strong>
                     <hr/>
@@ -29,6 +33,10 @@
                 <div id="options_container" class="buttons hide">
                     <input ng-repeat="(_, choice) in choices" id="displayLies" type="button" value="{{ choice }} " class="button" ng-click="vote(this)"/>
                 </div>
+            </ul>
+
+            <ul id="users">
+                <li ng-repeat="(username, points) in users">{{ username }}, {{ points }}</li>
             </ul>
 
             <footer>
@@ -76,6 +84,8 @@
                 $scope.game = $firebase(gameReference).$asObject();
                 $scope.game.$loaded().then(function() {
                     game = new Game(username, $scope.game, 3);
+                    $scope.users = game.users;
+                    console.log(game.users);
                     $.getJSON("https://sucker.firebaseio.com/questions.json",
                         function(data, status, xhr) {
                             // TODO: randomize, but make sure it only gets set *once*
@@ -92,17 +102,26 @@
                                 "DISPLAY_RESULTS" : $scope.showResults,
                                 "GAMEOVER" : undefined
                             });
-                        });
+                        }
+                    );
                 });
 
                 $scope.showEnterLie = function() {
                     console.log("$scope.showEnterLie");
 
+                    $("#waiting").addClass("hide");
                     $("#answer").addClass("hide");
                     $("#lie").removeClass("hide");
                     $("#options_container").addClass("hide");
                     $scope.question = game.getQuestion();
                     $scope.choices = game.getChoices();
+                }
+
+                $scope.showNothing = function() {
+                    $("#waiting").removeClass("hide");
+                    $("#answer").addClass("hide");
+                    $("#lie").addClass("hide");
+                    $("#options_container").addClass("hide");
                 }
 
                 $scope.enterLie = function(e) {
@@ -111,6 +130,7 @@
                         $scope.choices[username] = $scope.inputLie;
                         $scope.game.$save();
                         $scope.inputLie = "";
+                        $scope.showNothing();
                     }
                 }
 
@@ -118,6 +138,7 @@
                     console.log("$scope.showChoices");
 
                     $scope.choices = game.getChoices();
+                    $("#waiting").addClass("hide");
                     $("#answer").addClass("hide");
                     $("#lie").addClass("hide");
                     $("#options_container").removeClass("hide");
@@ -127,6 +148,7 @@
                     console.log("$scope.showResults");
                     $scope.answer = game.getAnswer();
 
+                    $("#waiting").addClass("hide");
                     $("#answer").removeClass("hide");
                     $("#lie").addClass("hide");
                     $("#options_container").addClass("hide");
@@ -136,6 +158,7 @@
                     console.log("Starting game..");
                     $("#app").removeClass("hide");
                     $("#startButton").addClass("hide");
+                    $("#waiting").addClass("hide");
                     var date = new Date();
                     var time = date.getTime();
 
@@ -168,6 +191,7 @@
                     } else {
                         console.log("Wrong answer.");
                     }
+                    $scope.showNothing();
                 }
       }]);
     </script>
