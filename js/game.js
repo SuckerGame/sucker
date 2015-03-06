@@ -15,6 +15,14 @@ var Game = function(user, gameObject, maxNumRounds) {
     this.user = user;
     this.game = gameObject;
 
+    if (DEBUG || !gameObject.users) {
+        gameObject.users = {};
+    }
+
+    if (!gameObject.users[user]) {
+        gameObject.users[user] = 0;
+    }
+
     if (DEBUG || !gameObject.state) {
         gameObject.state = Game.State.PREGAME;
     }
@@ -23,16 +31,8 @@ var Game = function(user, gameObject, maxNumRounds) {
         gameObject.round = -1;
     }
 
-    if (DEBUG || !gameObject.points) {
-        gameObject.points = {};
-    }
-
-    if (!gameObject.points[this.user]) {
-        gameObject.points[this.user] = 0;
-    }
-
     this.round = gameObject.round;
-
+    this.users = gameObject.users;
     this.questions = [];
     this.stateCallbacks = [];
 
@@ -93,16 +93,16 @@ Game.prototype.update = function(currentTime) {
         }
     }
 
-    this.state = this.game.state = this.game.times[closestTime].state;
-    this.round = this.game.round = this.game.times[closestTime].round;
-    console.log("state: " + this.state + " round: " + this.round);
-    this.game.$save();
-    this.stateCallbacks[this.game.state]();
-
+    var newstate = this.game.times[closestTime].state;
+    if (this.state != newstate) {
+        this.state = this.game.state = this.game.times[closestTime].state;
+        this.round = this.game.round = this.game.times[closestTime].round;
+        this.game.$save();
+        this.stateCallbacks[this.game.state]();
+    }
 
     var next = parseInt(closestTime) + 10000;
     var timeTillNextState = Math.floor((next - currentTime) / 1000);
-    // console.log("derp: " + derp + "next: " + next + " currentTime: " + currentTime);
     return timeTillNextState;
 }
 
@@ -170,6 +170,6 @@ Game.prototype.getChoices = function() {
  *
  */
 Game.prototype.addPoints = function(points) {
-    this.game.points[this.user] += points;
+    this.game.users[this.user] += points;
     this.game.$save();
 }
