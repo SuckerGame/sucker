@@ -2,8 +2,9 @@
   visibility: gone;
 }
 
-#startButton {
+#login {
   margin-top: 250px;
+  text-align: center;
 }
 
 #displayLies {
@@ -39,23 +40,23 @@
   height: auto;
 }
 
-#options_container input:nth-child(1) {
+#options_container input:nth-child(5n + 1) {
   background-color: #337ab7;
 }
 
-#options_container input:nth-child(2) {
+#options_container input:nth-child(5n + 2) {
   background-color: #5cb85c;
 }
 
-#options_container input:nth-child(3) {
+#options_container input:nth-child(5n + 3) {
   background-color: #5bc0de;
 }
 
-#options_container input:nth-child(4) {
+#options_container input:nth-child(5n + 4) {
   background-color: #f0ad4e;
 }
 
-#options_container input:nth-child(5) {
+#options_container input:nth-child(5n + 5) {
   background-color: #d9534f;
 }
 
