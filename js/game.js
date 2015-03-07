@@ -31,6 +31,7 @@ var Game = function(user, gameObject, maxNumRounds) {
         gameObject.round = -1;
     }
 
+    this.users = gameObject.users;
     this.round = gameObject.round;
     this.users = gameObject.users;
     this.state = gameObject.state;
@@ -42,6 +43,7 @@ var Game = function(user, gameObject, maxNumRounds) {
 
 Game.State = {
     PREGAME : "PREGAME",
+    STARTED : "STARTED",
     INPUT_LIE : "INPUT_LIE",
     VOTE : "VOTE",
     DISPLAY_RESULTS : "DISPLAY_RESULTS",
@@ -50,7 +52,7 @@ Game.State = {
 
 
 Game.prototype.start = function() {
-    this.state = this.game.state = Game.State.INPUT_LIE;
+    this.state = this.game.state = Game.State.STARTED;
     this.game.$save();
 }
 
@@ -127,20 +129,6 @@ Game.prototype.setQuestions = function(questions) {
 }
 
 /*
- * Warning: This question does not check whether or not
- * there *is* a "next" question.
- * 
- * @return An object with the next question data.
- */
-Game.prototype.getNextQuestion = function() {
-    this.round = this.round + 1;
-    var next = this.questions[this.round].Q;
-    this.game.round = this.round; // TODO: Risky?
-    this.game.$save();
-    return next;
-}
-
-/*
  * Gets the current question.
  */
 Game.prototype.getQuestion = function() {
@@ -162,9 +150,6 @@ Game.prototype.getChoices = function() {
     return this.game.questions[this.questions[this.round].Q].choices;
 }
 
-/**
- *
- */
 Game.prototype.addPoints = function(points) {
     this.game.users[this.user] += points;
     this.game.$save();

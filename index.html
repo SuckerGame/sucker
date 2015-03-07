@@ -8,7 +8,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
         <script src="js/game.js"></script>
 
-        <link rel='stylesheet' href='https://www.firebase.com/resources/tutorial/css/example.css'/>
+        <link rel='stylesheet' href='css/firebase.css'/>
         <link rel='stylesheet' href='css/style.css'/>
     </head>
 
@@ -17,7 +17,6 @@
         <input type="button" value="Create Game" ng-click="createGame()"/>
 
         <div id="login">
-          <h1>Sucker</h1>
           <input type="text" ng-model='input_username' placeholder="Enter a username to join the game."/>
           <input type="button" value="Join Game" ng-click="onJoinGameClicked()"/>
         </div>
@@ -25,31 +24,29 @@
         <div id="app" class='example-chat l-demo-container hide'>
             <header>Welcome {{ username }} : Game {{ game.$id }}</header>
 
-            <div class='example-chat-toolbar' ng-model='question'>
+            <div id="question" class='example-chat-toolbar' ng-model='question'>
                 {{ question }}
             </div>
 
-            <ul id='inputs'>
-                <div id="waiting" class="hide">
-                    Waiting for other players...
-                </div>
-                
-                <div id="answer" class="hide">
-                    The correct answer is: <strong>{{ answer }}</strong>
-                    <hr/>
-                </div>
+            <div id="waiting" class="hide">
+                Waiting for other players...
+            </div>
+            
+            <div id="answer" class="hide">
+                The correct answer is: <strong>{{ answer }}</strong>
+                <hr/>
+            </div>
 
-                <div id="options_container" class="buttons hide">
-                    <input ng-repeat="(_, choice) in choices" id="displayLies" type="button" value="{{ choice }} " class="button" ng-click="vote(this)"/>
-                </div>
-            </ul>
+            <div id="options_container" class="buttons hide">
+                <input ng-repeat="(_, choice) in choices" id="displayLies" type="button" value="{{ choice }} " class="button" ng-click="vote(this)"/>
+            </div>
 
             <ul id="users">
                 <li ng-repeat="(username, points) in users">{{ username }}, {{ points }}</li>
             </ul>
 
             <footer>
-                <input id="lie" ng-model='inputLie' ng-keydown="enterLie($event)" type='text' id='messageInput'  placeholder='Type a lie...'>
+                <input id="lie" ng-model='inputLie' ng-keydown="enterLie($event)" type='text' id='messageInput'  placeholder='Type a lie...' class="hide">
                 <div>
                     Timer: <span id="time">10</span>
                 </div>
@@ -105,6 +102,7 @@
                     var gameReference = sucker.child("game");
                     var newGame = gameReference.push({
                         round: -1,
+                        users: {username: {points: 0}}
                     });
 
                      // TODO: Hacky =\. We just want this game as an object.
