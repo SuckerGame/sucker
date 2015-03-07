@@ -33,6 +33,7 @@ var Game = function(user, gameObject, maxNumRounds) {
 
     this.round = gameObject.round;
     this.users = gameObject.users;
+    this.state = gameObject.state;
     this.questions = [];
     this.stateCallbacks = [];
 
@@ -47,11 +48,10 @@ Game.State = {
     GAMEOVER : "GAMEOVER",
 }
 
-/**
- * @return if the game has already started.
- */
-Game.prototype.isStarted = function() {
-    return this.game.state != Game.State.PREGAME;
+
+Game.prototype.start = function() {
+    this.state = this.game.state = Game.State.INPUT_LIE;
+    this.game.$save();
 }
 
 /*
@@ -76,10 +76,6 @@ Game.prototype.setTimes = function(times) {
  * @return Number of seconds left until the next state.
  */
 Game.prototype.update = function(currentTime) {
-    if (this.game.state == Game.State.PREGAME) {
-        this.game.state = Game.State.INPUT_LIE;
-    }
-
     var times = Object.keys(this.game.times);
     var closestTime = times[0];
     var minDiff = currentTime - closestTime;

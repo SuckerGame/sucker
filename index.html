@@ -14,6 +14,7 @@
 
     <body ng-controller="MyController">
         <input type="button" value="Start Game" ng-click="startGame()"/>
+        <input type="button" value="Create Game" ng-click="createGame()"/>
 
         <div id="login">
           <h1>Sucker</h1>
@@ -33,7 +34,7 @@
                     Waiting for other players...
                 </div>
                 
-                <div id="answer">
+                <div id="answer" class="hide">
                     The correct answer is: <strong>{{ answer }}</strong>
                     <hr/>
                 </div>
@@ -84,7 +85,8 @@
 
         var update = function() {
             console.log("update");
-            if (game) {
+            if (game && game.state != Game.State.PREGAME) {
+                console.log(game.state);
                 var timer = game.update(new Date().getTime());
                 $("#time").html(Math.max(0, timer));
             }
@@ -97,18 +99,20 @@
                 var addPoints = 0;
 
                 $scope.username = username;
-                var gameReference = new Firebase("https://sucker.firebaseio.com/game/" + id);
-                $scope.game = $firebase(gameReference).$asObject();
-                $scope.game.$loaded().then(function() {
-                    if (username) {
-                        $scope.joinGame();
-                    }
-                });
+                var sucker = new Firebase("https://sucker.firebaseio.com");
 
-                $scope.joinGame = function() {
-                    game = new Game(username, $scope.game, 3);
-                    $scope.users = game.users;
-                    console.log(game.users);
+                $scope.createGame = function() {
+                    var gameReference = sucker.child("game");
+                    var newGame = gameReference.push({
+                        round: -1,
+                    });
+
+                     // TODO: Hacky =\. We just want this game as an object.
+                    var id = newGame.path.u[1];
+                    var ref = new Firebase("https://sucker.firebaseio.com/game/" + id);
+                    $scope.game = $firebase(ref).$asObject();
+                    game = new Game(username, $scope.game, 4);
+
                     $.getJSON("https://sucker.firebaseio.com/questions.json",
                         function(data, status, xhr) {
                             // TODO: randomize, but make sure it only gets set *once*
@@ -129,6 +133,12 @@
                     );
                 }
 
+                $scope.joinGame = function() {
+                    game = new Game(username, $scope.game, 4);
+                    $scope.users = game.users;
+                    console.log(game.users);
+                }
+
                 $scope.onJoinGameClicked = function() {
                     var input = $scope.input_username;
                     if (input) {
@@ -146,6 +156,10 @@
                     $("#app").removeClass("hide");
                     $("#startButton").addClass("hide");
                     $("#waiting").addClass("hide");
+
+
+                    // TODO: Use Firbase's server time because not everyone's
+                    // computer will sync perfectly
                     var date = new Date();
                     var time = date.getTime();
 
@@ -168,6 +182,8 @@
                     times[time] = {state: Game.State.GAMEOVER, round: 4}; // TODO: magic #
                     console.log(times);
                     game.setTimes(times);
+                    game.start();
+                    $scope.showEnterLie();
                 }
 
                 $scope.showEnterLie = function() {
