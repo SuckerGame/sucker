@@ -22,14 +22,21 @@
         <!-- TODO: Add a PREGAME view. -->
         <!-- TODO: Deduct points if a user does not input a lie. -->
 
-        <input type="button" value="Start Game" ng-click="startGame()"/>
-        <input type="button" value="Create Game" ng-click="createGame()"/>
-        <input type="button" value="Join Game" ng-click="joinGame()"/>
+        <input id="startButton" type="button" value="Start Game" ng-click="startGame()"/>
+        <input id="createButton" type="button" value="Create Game" ng-click="createGame()"/>
+        <input id="joinButton" type="button" value="Join Game" ng-click="joinGame()"/>
 
-        <div id="login">
+        <div id="join" class="hide">
+            <div id="login">
+                <input type="text" ng-model='input_username' placeholder="Enter lobby code"/>
+                <input type="button" value="Join" ng-click="onJoinGameClicked()"/>
+            </div>
+        </div>
+
+        <!--<div id="login">
           <input type="text" ng-model='input_username' placeholder="Enter a username to join the game."/>
           <input type="button" value="Join Game" ng-click="onJoinGameClicked()"/>
-        </div>
+        </div>-->
 
         <div id="app" class="init example-chat l-demo-container hide">
             <header>Welcome {{ username }} : Game {{ game.$id }}</header>
@@ -92,7 +99,7 @@
             </footer>
         </div>
     <script>
-        var showLogin = function(show) {
+        /*var showLogin = function(show) {
             if (show) {
                 $("#login").removeClass("hide");
                 $("#app").addClass("hide");
@@ -100,20 +107,20 @@
                 $("#login").addClass("hide");
                 $("#app").removeClass("hide");
             }
-        }
+        }*/
 
         var id = "-JhWr1YifZ_GoNuUE1ig";
         var username;
-        showLogin(true);
+        //showLogin(true);
 
         // Check if a username exists
         if (document.URL.indexOf(".html") >= 0) {
             username = "LocalUser";
-            showLogin(false);
+            //showLogin(false);
         } else {
             username = $.cookie('sucker');
             if (username) {
-                showLogin(false);
+                //showLogin(false);
             }
         }
 
@@ -171,13 +178,13 @@
                     );
                 }
 
-                $scope.joinGame = function() {
+                /*$scope.joinGame = function() {
                     game = new Game(username, $scope.game, 4);
                     $scope.users = game.users;
                     console.log(game.users);
-                }
+                }*/
 
-                $scope.onJoinGameClicked = function() {
+                /*$scope.onJoinGameClicked = function() {
                     var input = $scope.input_username;
                     if (input) {
                         username = input;
@@ -187,6 +194,13 @@
                     } else {
                         alert("You need a username.");
                     }
+                }*/
+
+                $scope.joinGame = function() {
+                    $("#join").removeClass("hide");
+                    $("#startButton").addClass("hide");
+                    $("#createButton").addClass("hide");
+                    $("#joinButton").addClass("hide");
                 }
 
                 $scope.startGame = function() {
