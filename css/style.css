@@ -72,3 +72,7 @@ input[type="button"] {
 input[type="button"]:hover {
   opacity: 0.6;
 }
+
+.init {
+  display: none;
+}
