@@ -41,10 +41,66 @@
             <input type="button" value="Join Game" ng-click="joinGame()"/>
         </div>
 
-        <!--<div id="login">
-          <input type="text" ng-model='input_username' placeholder="Enter a username to join the game."/>
-          <input type="button" value="Join Game" ng-click="onJoinGameClicked()"/>
-        </div>-->
+        <div id= 'lobby' class='example chat l-demo-container init'>
+            <header>Welcome {{ username }} : Game {{ game.$id }}</header>
+
+            <div id="question" class='example-chat-toolbar' ng-model='question'>
+                {{ question }}
+            </div>
+            <div id="gameover" class="hide">
+                GAME OVER.
+            </div>
+
+            <div id="waiting" class="hide">
+                Waiting for other players...
+                <div class="loading">
+                    <div class="finger finger-1">
+                        <div class="finger-item">
+                            <span></span><i></i>
+                        </div>
+                    </div>
+                    <div class="finger finger-2">
+                        <div class="finger-item">
+                            <span></span><i></i>
+                        </div>
+                    </div>
+                    <div class="finger finger-3">
+                        <div class="finger-item">
+                            <span></span><i></i>
+                        </div>
+                    </div>
+                    <div class="finger finger-4">
+                        <div class="finger-item">
+                            <span></span><i></i>
+                        </div>
+                    </div>
+                    <div class="last-finger">
+                        <div class="last-finger-item"><i></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="answer" class="hide">
+                The correct answer is: <strong>{{ answer }}</strong>
+                <hr/>
+            </div>
+
+            <div id="options_container" class="buttons hide">
+                <input ng-repeat="(_, choice) in choices" id="displayLies" type="button" value="{{ choice }} " class="button" ng-click="vote(this)"/>
+            </div>
+
+            <ul id="users">
+                <li ng-repeat="(username, points) in users">{{ username }}, {{ points }}</li>
+            </ul>
+
+            <footer>
+                <input id="lie" ng-model='inputLie' ng-keydown="enterLie($event)" type='text' id='messageInput'  placeholder='Type a lie...' class="hide">
+                <div>
+                    Timer: <span id="time">10</span>
+                </div>
+            </footer>
+        </div>
 
         <div id="app" class="init example-chat l-demo-container hide">
             <header>Welcome {{ username }} : Game {{ game.$id }}</header>
@@ -154,6 +210,12 @@
 
                 $scope.createGame = function() {
                     $("#pregame").addClass("hide");
+                    $('#lobby').removeClass('init');
+                    $("#gameover").addClass("hide");
+                    $("#app").removeClass("hide");
+                    $("#startButton").addClass("hide");
+                    $("#waiting").addClass("hide");
+                    
                     var gameReference = sucker.child("game");
                     var newGame = gameReference.push({
                         round: -1,
