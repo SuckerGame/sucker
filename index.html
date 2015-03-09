@@ -22,9 +22,14 @@
         <!-- TODO: Add a PREGAME view. -->
         <!-- TODO: Deduct points if a user does not input a lie. -->
 
-        <input type="button" value="Start Game" ng-click="startGame()"/>
-        <input type="button" value="Create Game" ng-click="createGame()"/>
-        <input type="button" value="Join Game" ng-click="joinGame()"/>
+        <div id= 'pregame' class='center'>
+            <img src="http://blog.flamingtext.com/blog/2015/03/09/flamingtext_com_1425864309_282458501.png" border="0" alt="Logo Design by FlamingText.com" title="Logo Design by FlamingText.com">
+            <br>
+            <br>
+            <input type="button" value="Start Game" ng-click="startGame()"/>
+            <input type="button" value="Create Game" ng-click="createGame()"/>
+            <input type="button" value="Join Game" ng-click="joinGame()"/>
+        </div>
 
         <div id="login">
           <input type="text" ng-model='input_username' placeholder="Enter a username to join the game."/>
@@ -138,6 +143,7 @@
                 var sucker = new Firebase("https://sucker.firebaseio.com");
 
                 $scope.createGame = function() {
+                    $("#pregame").addClass("hide");
                     var gameReference = sucker.child("game");
                     var newGame = gameReference.push({
                         round: -1,
@@ -172,6 +178,7 @@
                 }
 
                 $scope.joinGame = function() {
+                    $("#pregame").addClass("hide");
                     game = new Game(username, $scope.game, 4);
                     $scope.users = game.users;
                     console.log(game.users);
@@ -191,6 +198,7 @@
 
                 $scope.startGame = function() {
                     console.log("Starting game..");
+                    $("#pregame").addClass("hide");
                     $("#app").removeClass("init");
                     $("#gameover").addClass("hide");
                     $("#app").removeClass("hide");
