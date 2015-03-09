@@ -11,6 +11,7 @@
         <link rel='stylesheet' href='css/firebase.css'/>
         <link rel='stylesheet' href='css/handanimation.css'/>
         <link rel='stylesheet' href='css/style.css'/>
+        <link rel='stylesheet' type='text/css' media='all' href='css/animate.css'/>
     </head>
 
     <body ng-controller="MyController">
@@ -68,7 +69,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div id="answer" class="hide">
                 The correct answer is: <strong>{{ answer }}</strong>
                 <hr/>
@@ -95,8 +96,8 @@
                 $("#login").removeClass("hide");
                 $("#app").addClass("hide");
             } else {
-                $("#login").addClass("hide");                
-                $("#app").removeClass("hide");                
+                $("#login").addClass("hide");
+                $("#app").removeClass("hide");
             }
         }
 
@@ -261,6 +262,7 @@
                     $("#waiting").addClass("hide");
                     $("#answer").addClass("hide");
                     $("#lie").addClass("hide");
+                    $("#options_container").addClass("option animated bounceInDown");
                     $("#options_container").removeClass("hide");
                 }
 
