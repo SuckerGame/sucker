@@ -22,15 +22,14 @@
         <!-- TODO: Add a PREGAME view. -->
         <!-- TODO: Deduct points if a user does not input a lie. -->
 
-        <input type="button" value="Start Game" ng-click="startGame()"/>
-        <input type="button" value="Create Game" ng-click="createGame()"/>
-        <input type="button" value="Join Game" ng-click="joinGame()"/>
+
 
         <div id="join" class="hide">
             <div id="login">
                 <input type="text" ng-model='input_username' placeholder="Enter lobby code"/>
                 <input type="button" value="Join" ng-click="onJoinGameClicked()"/>
             </div>
+        </div>
 
         <div id= 'pregame' class='center'>
             <img src="http://blog.flamingtext.com/blog/2015/03/09/flamingtext_com_1425864309_282458501.png" border="0" alt="Logo Design by FlamingText.com" title="Logo Design by FlamingText.com">
