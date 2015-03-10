@@ -82,3 +82,20 @@ input[type="button"]:hover {
 .init {
   display: none;
 }
+
+.lobby {
+  width: 600px;
+  margin: 40px auto 0px auto;
+}
+
+.players {
+  width: 200px;
+  float: right;
+}
+
+section {
+  width: 300px;
+  float: left;
+}
+
+

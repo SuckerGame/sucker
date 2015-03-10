@@ -19,14 +19,11 @@
         <!-- TODO: Show Start Game only when a Game has been created or joined -->
         <!-- TODO: Show text that displays whether or not the player has won -->
         <!-- TODO: Query username to make sure it's unique within a game -->
-        <!-- TODO: Add a PREGAME view. -->
         <!-- TODO: Deduct points if a user does not input a lie. -->
-
-
 
         <div id="join" class="hide">
             <div id="login">
-                <input type="text" ng-model='input_username' placeholder="Enter lobby code"/>
+                <input type="text" ng-model='input_lobby_code' placeholder="Enter lobby code"/>
                 <input type="button" value="Join" ng-click="onJoinGameClicked()"/>
             </div>
         </div>
@@ -41,6 +38,24 @@
             <input type="button" value="Start Game" ng-click="startGame()"/>
             <input type="button" value="Create Game" ng-click="createGame()"/>
             <input type="button" value="Join Game" ng-click="joinGame()"/>
+        </div>
+
+        <div id="lobby" class="init example-chat lobby hide">
+            <header>Lobby</header>
+            <div class="players example-chat">
+                <header>Players</header>
+                <strong>{{ users }}</strong>
+            </div>
+
+            <div class="section">
+                <h2>Welcome!</h2>
+                <p>Your invite code is:</p>
+                <p>WXYZ</p>  
+                <br><br>
+            </div>
+
+            <input type="text" ng-model='input_username' placeholder="Enter username"/>
+            <input type="button" value="Enter" ng-click=""/>
         </div>
 
         <div id="app" class="init example-chat l-demo-container hide">
@@ -150,6 +165,8 @@
                 var sucker = new Firebase("https://sucker.firebaseio.com");
 
                 $scope.createGame = function() {
+                    console.log("$scope.users");
+                    $("#lobby").removeClass("hide");
                     $("#pregame").addClass("hide");
                     $('#lobby').removeClass('init');
                     $("#gameover").addClass("hide");
@@ -168,6 +185,8 @@
                     var ref = new Firebase("https://sucker.firebaseio.com/game/" + id);
                     $scope.game = $firebase(ref).$asObject();
                     game = new Game(username, $scope.game, 4);
+
+                    $scope.users = game.users;
 
                     $.getJSON("https://sucker.firebaseio.com/questions.json",
                         function(data, status, xhr) {
