@@ -10,15 +10,12 @@ var DEBUG = true;
  * @param gameObject Firebase Game object.
  * @constructor
  */
-var Game = function(user, gameObject, maxNumRounds) {
+var Game = function(user, gameObject, maxNumRounds, stateCallbacks) {
     that = this;
     this.user = user;
     this.game = gameObject;
-    console.log("users:");
-    console.log(gameObject.users);
 
     if (!gameObject.users) {
-        console.log("deleting current users");
         gameObject.users = {};
     }
 
@@ -47,9 +44,10 @@ var Game = function(user, gameObject, maxNumRounds) {
     this.state = gameObject.state;
     this.times = gameObject.times;
     this.questions = [];
-    this.stateCallbacks = [];
+    this.stateCallbacks = stateCallbacks;
     this.activeUsers = gameObject.activeUsers;
     this.leftoverTime = gameObject.leftoverTime;
+    this.game.state = gameObject.state;
 
     this.game.$save();
 }
@@ -63,18 +61,9 @@ Game.State = {
     GAMEOVER : "GAMEOVER",
 }
 
-
 Game.prototype.start = function() {
     this.state = this.game.state = Game.State.STARTED;
     this.game.$save();
-}
-
-/*
- * @param callbacks An array of callback functions. Functions should
- *                  be in the same order the State enums are declared.
- */
-Game.prototype.setStateCallbacks = function(callbacks) {
-    this.stateCallbacks = callbacks;
 }
 
 /**

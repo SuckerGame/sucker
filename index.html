@@ -24,7 +24,7 @@
         <div id="join" class="hide">
             <div id="login">
                 <input type="text" ng-model='input_lobby_code' placeholder="Enter lobby code"/>
-                <input type="button" value="Join" ng-click="onJoinGameClicked()"/>
+                <input type="button" value="Join" ng-click="joinGame()"/>
             </div>
         </div>
 
@@ -39,7 +39,7 @@
 
         <div id="login" class="hide">
           <input type="text" ng-model='input_username' placeholder="Enter a username to join the game."/>
-          <input type="button" value="Join Game" ng-click="onJoinGameClicked()"/>
+          <input type="button" value="Join Game" ng-click="joinGame()"/>
         </div>
 
         <div id="lobby" class="init example-chat lobby hide">
@@ -165,17 +165,9 @@
                 var sucker = new Firebase("https://sucker.firebaseio.com");
 
                 var update = function() {
-                    //console.log("update");
-                    console.log(game.game.state);
                     if (game && game.game.state != Game.State.PREGAME) {
                         if (firstTime) {
-                            $("#lobby").addClass("hide");
-                            $("#pregame").addClass("hide");
-                            $("#app").removeClass("init");
-                            $("#gameover").addClass("hide");
-                            $("#app").removeClass("hide");
-                            $("#startButton").addClass("hide");
-                            $("#waiting").addClass("hide");
+                            $scope.showGame();
                             firstTime = false;
                         }
                         console.log("updating");
@@ -196,14 +188,17 @@
                 }
                 setInterval(update, 750);
 
-                $scope.createGame = function() {
-                    console.log("$scope.users");
+                $scope.showLobby = function() {
                     $("#lobby").removeClass("hide");
                     $("#pregame").addClass("hide");
                     $('#lobby').removeClass('init');
                     $("#gameover").addClass("hide");
                     $("#app").removeClass("hide");
                     $("#waiting").addClass("hide");
+                }
+
+                $scope.createGame = function() {
+                    $scope.showLobby();
 
                     var gameReference = sucker.child("game");
                     var newGame = gameReference.push({
@@ -217,7 +212,14 @@
                     var id = newGame.path.u[1];
                     var ref = new Firebase("https://sucker.firebaseio.com/game/" + id);
                     $scope.game = $firebase(ref).$asObject();
-                    game = new Game(username, $scope.game, 4);
+                    game = new Game(username, $scope.game, 4, {
+                        "PREGAME" : $scope.showWaiting,
+                        "STARTED" : $scope.showWaiting,
+                        "INPUT_LIE" : $scope.showEnterLie,
+                        "VOTE" : $scope.showChoices,
+                        "DISPLAY_RESULTS" : $scope.showResults,
+                        "GAMEOVER" : $scope.showGameOver
+                    });
 
                     $scope.users = game.users;
                     $scope.activeUsers = game.activeUsers;
@@ -232,21 +234,8 @@
                             }
 
                             game.setQuestions(questions);
-                            game.setStateCallbacks({
-                                "PREGAME" : $scope.showWaiting,
-                                "STARTED" : $scope.showWaiting,
-                                "INPUT_LIE" : $scope.showEnterLie,
-                                "VOTE" : $scope.showChoices,
-                                "DISPLAY_RESULTS" : $scope.showResults,
-                                "GAMEOVER" : $scope.showGameOver
-                            });
                         }
                     );
-                }
-
-                // TODO: Remove
-               $scope.onJoinGameClicked = function() {
-                    $scope.joinGame();
                 }
 
                 $scope.joinGame = function() {
@@ -254,40 +243,7 @@
                     $scope.game = $firebase(ref).$asObject();
 
                     $scope.game.$loaded().then(function(data) {
-                        game = new Game(username, $scope.game, 4);
-                        $scope.users = game.users;
-                        $scope.activeUsers = game.activeUsers;
-                        $scope.leftoverTime = game.leftoverTime;
-
-                        $.getJSON("https://sucker.firebaseio.com/questions.json",
-                        function(data, status, xhr) {
-                            // TODO: randomize, but make sure it only gets set *once*
-                            var questions = [];
-                            for (var i = 0; i < 4; ++i) {
-                                questions[i] = data[i];
-                            }
-                            //TODO: questions should already be set in create game
-                            game.setQuestions(questions);
-                            game.setStateCallbacks({
-                                "PREGAME" : $scope.showWaiting,
-                                "STARTED" : $scope.showWaiting,
-                                "INPUT_LIE" : $scope.showEnterLie,
-                                "VOTE" : $scope.showChoices,
-                                "DISPLAY_RESULTS" : $scope.showResults,
-                                "GAMEOVER" : $scope.showGameOver
-                            });
-                        }
-                    );
-
-
-                        $("#lobby").removeClass("hide");
-                        $("#pregame").addClass("hide");
-                        $('#lobby').removeClass('init');
-                        $("#gameover").addClass("hide");
-                        $("#app").removeClass("hide");
-                        $("#waiting").addClass("hide");
-
-                        game.setStateCallbacks({
+                        game = new Game(username, $scope.game, 4, {
                             "PREGAME" : $scope.showWaiting,
                             "STARTED" : $scope.showWaiting,
                             "INPUT_LIE" : $scope.showEnterLie,
@@ -295,17 +251,30 @@
                             "DISPLAY_RESULTS" : $scope.showResults,
                             "GAMEOVER" : $scope.showGameOver
                         });
+                        $scope.users = game.users;
+                        $scope.activeUsers = game.activeUsers;
+                        $scope.leftoverTime = game.leftoverTime;
 
+                        $.getJSON("https://sucker.firebaseio.com/questions.json", function(data, status, xhr) {
+                            // TODO: randomize, but make sure it only gets set *once*
+                            var questions = [];
+                            for (var i = 0; i < 4; ++i) {
+                                questions[i] = data[i];
+                            }
+                            //TODO: questions should already be set in create game
+                            game.setQuestions(questions);
+                        });
+
+                        $scope.showLobby();
                        // $("#pregame").addClass("hide");
                        // $("#join").removeClass("hide");
                        // $("#startButton").addClass("hide");
                        // $("#createButton").addClass("hide");
                        // $("#joinButton").addClass("hide");
                     });
-               }
+                }
 
-                $scope.startGame = function() {
-                    console.log("Starting game..");
+                $scope.showGame = function() {
                     $("#lobby").addClass("hide");
                     $("#pregame").addClass("hide");
                     $("#app").removeClass("init");
@@ -313,6 +282,12 @@
                     $("#app").removeClass("hide");
                     $("#startButton").addClass("hide");
                     $("#waiting").addClass("hide");
+                }
+
+
+                $scope.startGame = function() {
+                    console.log("Starting game..");
+                    $scope.showGame();
 
                     // TODO: Use Firbase's server time because not everyone's
                     // computer will sync perfectly
