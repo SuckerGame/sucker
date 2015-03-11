@@ -9,7 +9,7 @@
         <script src="js/game.js"></script>
 
         <link rel='stylesheet' href='css/firebase.css'/>
-        <link rel='stylesheet' href='css/handanimation.css'/>
+        <link rel='stylesheet' href='css/loadinganimation.css'/>
         <link rel='stylesheet' href='css/style.css'/>
         <link rel='stylesheet' type='text/css' media='all' href='css/animate.css'/>
     </head>
@@ -28,29 +28,35 @@
             </div>
         </div>
 
-        <!--delete later-->
-        <input type="button" value="Start Game" ng-click="startGame()"/>
 
-        <div id= 'pregame' class='center'>
+        <div id='pregame' class='center'>
             <img src="http://blog.flamingtext.com/blog/2015/03/09/flamingtext_com_1425864309_282458501.png" border="0" alt="Logo Design by FlamingText.com" title="Logo Design by FlamingText.com">
             <br>
             <br>
-            <input type="button" value="Start Game" ng-click="startGame()"/>
-            <input type="button" value="Create Game" ng-click="createGame()"/>
-            <input type="button" value="Join Game" ng-click="joinGame()"/>
+            <input class="gameButton" type="button" value="Create Game" ng-click="createGame()"/>
+            <input class="gameButton" type="button" value="Join Game" ng-click="joinGame()"/>
+        </div>
+
+        <div id="login" class="hide">
+          <input type="text" ng-model='input_username' placeholder="Enter a username to join the game."/>
+          <input type="button" value="Join Game" ng-click="onJoinGameClicked()"/>
         </div>
 
         <div id="lobby" class="init example-chat lobby hide">
             <header>Lobby</header>
+            <input type="button" value="Start Game" ng-click="startGame()"/>
+
             <div class="players example-chat">
                 <header>Players</header>
-                <strong>{{ users }}</strong>
+                 <p ng-repeat="(username, _) in users">
+                    {{ username }}
+                 </p> 
             </div>
 
             <div class="section">
                 <h2>Welcome!</h2>
                 <p>Your invite code is:</p>
-                <p>WXYZ</p>  
+                <div>{{ game.$id }}</div>
                 <br><br>
             </div>
 
@@ -70,32 +76,28 @@
 
             <div id="waiting" class="hide">
                 Waiting for other players...
-                <div class="loading">
-                    <div class="finger finger-1">
-                        <div class="finger-item">
-                            <span></span><i></i>
-                        </div>
-                    </div>
-                    <div class="finger finger-2">
-                        <div class="finger-item">
-                            <span></span><i></i>
-                        </div>
-                    </div>
-                    <div class="finger finger-3">
-                        <div class="finger-item">
-                            <span></span><i></i>
-                        </div>
-                    </div>
-                    <div class="finger finger-4">
-                        <div class="finger-item">
-                            <span></span><i></i>
-                        </div>
-                    </div>
-                    <div class="last-finger">
-                        <div class="last-finger-item"><i></i>
-                        </div>
-                    </div>
-                </div>
+              <div>
+                <svg width="70" height="20">
+                  <rect width="20" height="20" x="0" y="0" rx="3" ry="3">
+                    <animate attributeName="width" values="0;20;20;20;0" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="height" values="0;20;20;20;0" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="x" values="10;0;0;0;10" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="y" values="10;0;0;0;10" dur="1000ms" repeatCount="indefinite"/>
+                  </rect>
+                  <rect width="20" height="20" x="25" y="0" rx="3" ry="3">
+                    <animate attributeName="width" values="0;20;20;20;0" begin="200ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="height" values="0;20;20;20;0" begin="200ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="x" values="35;25;25;25;35" begin="200ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="y" values="10;0;0;0;10" begin="200ms" dur="1000ms" repeatCount="indefinite"/>
+                  </rect>
+                  <rect width="20" height="20" x="50" y="0" rx="3" ry="3">
+                    <animate attributeName="width" values="0;20;20;20;0" begin="400ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="height" values="0;20;20;20;0" begin="400ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="x" values="60;50;50;50;60" begin="400ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="y" values="10;0;0;0;10" begin="400ms" dur="1000ms" repeatCount="indefinite"/>
+                  </rect>
+                </svg>
+              </div>
             </div>
 
             <div id="answer" class="hide">
@@ -107,8 +109,8 @@
                 <input ng-repeat="(_, choice) in choices" id="displayLies" type="button" value="{{ choice }} " class="button" ng-click="vote(this)"/>
             </div>
 
-            <ul id="users">
-                <li ng-repeat="(username, points) in users">{{ username }}, {{ points }}</li>
+            <ul id="users" class="hide">
+                <li ng-repeat="(username, points) in users">{{ username }} [{{ points }}]</li>
             </ul>
 
             <footer>
@@ -118,43 +120,41 @@
                 </div>
             </footer>
         </div>
-    <script>
-        /*var showLogin = function(show) {
-            if (show) {
-                $("#login").removeClass("hide");
-                $("#app").addClass("hide");
-            } else {
-                $("#login").addClass("hide");
-                $("#app").removeClass("hide");
-            }
-        }*/
 
-        var id = "-JhWr1YifZ_GoNuUE1ig";
+
+
+    <script>
+        var showLogin = function(show) {
+            // if (show) {
+            //     $("#login").removeClass("hide");
+            //     $("#app").addClass("hide");
+            // } else {
+            //     $("#login").addClass("hide");
+            //     $("#app").removeClass("hide");
+            // }
+        }
+
+        var testGameID = "-JhWr1YifZ_GoNuUE1ig";
         var username;
-        //showLogin(true);
+        showLogin(true);
 
         // Check if a username exists
-        if (document.URL.indexOf(".html") >= 0) {
-            username = "LocalUser";
-            //showLogin(false);
-        } else {
-            username = $.cookie('sucker');
-            if (username) {
-                //showLogin(false);
-            }
-        }
+        // if (document.URL.indexOf(".html") >= 0) {
+        //     username = "LocalUser";
+        //     showLogin(false);
+        // } else {
+        //     username = $.cookie('sucker');
+        //     if (username) {
+        //         showLogin(false);
+        //     }
+        // }
+        username = "" + new Date().getTime() + "XYZ";
 
         var game;
 
-        var update = function() {
-            console.log("update");
-            if (game && game.state != Game.State.PREGAME) {
-                console.log(game.state);
-                var timer = game.update(new Date().getTime());
-                $("#time").html(Math.max(0, timer));
-            }
-        }
-        setInterval(update, 750);
+        var numUsers;
+
+        var firstTime = true;
 
         var myApp = angular.module("myApp", ["firebase"]);
         myApp.controller('MyController', ['$scope', '$firebase',
@@ -164,6 +164,38 @@
                 $scope.username = username;
                 var sucker = new Firebase("https://sucker.firebaseio.com");
 
+                var update = function() {
+                    //console.log("update");
+                    console.log(game.game.state);
+                    if (game && game.game.state != Game.State.PREGAME) {
+                        if (firstTime) {
+                            $("#lobby").addClass("hide");
+                            $("#pregame").addClass("hide");
+                            $("#app").removeClass("init");
+                            $("#gameover").addClass("hide");
+                            $("#app").removeClass("hide");
+                            $("#startButton").addClass("hide");
+                            $("#waiting").addClass("hide");
+                            firstTime = false;
+                        }
+                        console.log("updating");
+                        console.log("activeUsers: " + game.getActiveUsers());
+                        console.log("leftoverTime: " + game.getLeftoverTime());
+                        $scope.activeUsers = game.getActiveUsers();
+                        $scope.leftoverTime = game.getLeftoverTime();
+                        var timer = game.update((new Date().getTime()) + $scope.leftoverTime);
+                        console.log(timer);
+                        if($scope.activeUsers == 0) {
+                            $scope.leftoverTime += timer * 1000;
+                            game.setLeftoverTime($scope.leftoverTime);
+                            console.log("numUsers: " + numUsers);
+                            game.setActiveUsers(numUsers);
+                        }
+                        $("#time").html(Math.max(0, timer));
+                    }
+                }
+                setInterval(update, 750);
+
                 $scope.createGame = function() {
                     console.log("$scope.users");
                     $("#lobby").removeClass("hide");
@@ -171,13 +203,14 @@
                     $('#lobby').removeClass('init');
                     $("#gameover").addClass("hide");
                     $("#app").removeClass("hide");
-                    //$("#startButton").addClass("hide");
                     $("#waiting").addClass("hide");
-                    
+
                     var gameReference = sucker.child("game");
                     var newGame = gameReference.push({
                         round: -1,
-                        users: {username: {points: 0}}
+                        users: {username: {points: 0}},
+                        activeUsers: 0,
+                        leftoverTime: 0
                     });
 
                      // TODO: Hacky =\. We just want this game as an object.
@@ -187,6 +220,8 @@
                     game = new Game(username, $scope.game, 4);
 
                     $scope.users = game.users;
+                    $scope.activeUsers = game.activeUsers;
+                    $scope.leftoverTime = game.leftoverTime;
 
                     $.getJSON("https://sucker.firebaseio.com/questions.json",
                         function(data, status, xhr) {
@@ -208,36 +243,70 @@
                         }
                     );
                 }
-                /*$scope.joinGame = function() {
-                $scope.joinGame = function() {
-                    $("#pregame").addClass("hide");
-                    game = new Game(username, $scope.game, 4);
-                    $scope.users = game.users;
-                    console.log(game.users);
-                }*/
 
-                /*$scope.onJoinGameClicked = function() {
-                    var input = $scope.input_username;
-                    if (input) {
-                        username = input;
-                        $.cookie('sucker', username, { expires: 7, path: '/' });
-                        showLogin(false);
-                        $scope.joinGame();
-                    } else {
-                        alert("You need a username.");
-                    }
-                }*/
-
-                $scope.joinGame = function() {
-                    $("#pregame").addClass("hide");
-                    $("#join").removeClass("hide");
-                    $("#startButton").addClass("hide");
-                    $("#createButton").addClass("hide");
-                    $("#joinButton").addClass("hide");
+                // TODO: Remove
+               $scope.onJoinGameClicked = function() {
+                    $scope.joinGame();
                 }
+
+                $scope.joinGame = function() {
+                    var ref = new Firebase("https://sucker.firebaseio.com/game/" + testGameID);
+                    $scope.game = $firebase(ref).$asObject();
+
+                    $scope.game.$loaded().then(function(data) {
+                        game = new Game(username, $scope.game, 4);
+                        $scope.users = game.users;
+                        $scope.activeUsers = game.activeUsers;
+                        $scope.leftoverTime = game.leftoverTime;
+
+                        $.getJSON("https://sucker.firebaseio.com/questions.json",
+                        function(data, status, xhr) {
+                            // TODO: randomize, but make sure it only gets set *once*
+                            var questions = [];
+                            for (var i = 0; i < 4; ++i) {
+                                questions[i] = data[i];
+                            }
+                            //TODO: questions should already be set in create game
+                            game.setQuestions(questions);
+                            game.setStateCallbacks({
+                                "PREGAME" : $scope.showWaiting,
+                                "STARTED" : $scope.showWaiting,
+                                "INPUT_LIE" : $scope.showEnterLie,
+                                "VOTE" : $scope.showChoices,
+                                "DISPLAY_RESULTS" : $scope.showResults,
+                                "GAMEOVER" : $scope.showGameOver
+                            });
+                        }
+                    );
+
+
+                        $("#lobby").removeClass("hide");
+                        $("#pregame").addClass("hide");
+                        $('#lobby').removeClass('init');
+                        $("#gameover").addClass("hide");
+                        $("#app").removeClass("hide");
+                        $("#waiting").addClass("hide");
+
+                        game.setStateCallbacks({
+                            "PREGAME" : $scope.showWaiting,
+                            "STARTED" : $scope.showWaiting,
+                            "INPUT_LIE" : $scope.showEnterLie,
+                            "VOTE" : $scope.showChoices,
+                            "DISPLAY_RESULTS" : $scope.showResults,
+                            "GAMEOVER" : $scope.showGameOver
+                        });
+
+                       // $("#pregame").addClass("hide");
+                       // $("#join").removeClass("hide");
+                       // $("#startButton").addClass("hide");
+                       // $("#createButton").addClass("hide");
+                       // $("#joinButton").addClass("hide");
+                    });
+               }
 
                 $scope.startGame = function() {
                     console.log("Starting game..");
+                    $("#lobby").addClass("hide");
                     $("#pregame").addClass("hide");
                     $("#app").removeClass("init");
                     $("#gameover").addClass("hide");
@@ -245,13 +314,17 @@
                     $("#startButton").addClass("hide");
                     $("#waiting").addClass("hide");
 
-
                     // TODO: Use Firbase's server time because not everyone's
                     // computer will sync perfectly
                     var date = new Date();
                     var time = date.getTime();
 
                     var times = {};
+
+                    $scope.activeUsers = Object.keys($scope.users).length;
+                    numUsers = $scope.activeUsers;
+                    console.log("start active users: " + $scope.activeUsers);
+
                     // for each round
                     // TODO: remove magic numero 4
                     for (var round = 0; round < 4; ++round) {
@@ -270,6 +343,8 @@
                     times[time] = {state: Game.State.GAMEOVER, round: 4}; // TODO: magic #
                     console.log(times);
                     game.setTimes(times);
+                    game.setActiveUsers($scope.activeUsers);
+                    console.log("set active users: " + game.getActiveUsers());
                     game.start();
                     $scope.showEnterLie();
                 }
@@ -282,8 +357,11 @@
                     $("#answer").addClass("hide");
                     $("#lie").removeClass("hide");
                     $("#options_container").addClass("hide");
+                    $("#users").addClass("hide");
                     $scope.question = game.getQuestion();
                     $scope.choices = game.getChoices();
+                    $scope.activeUsers = game.getActiveUsers();
+                    game.setActiveUsers($scope.activeUsers);
                 }
 
                 $scope.enterLie = function(e) {
@@ -297,15 +375,25 @@
                 }
 
                 $scope.showWaiting = function() {
+                    console.log("waiting...");
                     $("#gameover").addClass("hide");
                     $("#waiting").removeClass("hide");
                     $("#answer").addClass("hide");
                     $("#lie").addClass("hide");
                     $("#options_container").addClass("hide");
+
+                    $scope.activeUsers = game.getActiveUsers();
+                    $scope.activeUsers--;
+                    game.setActiveUsers($scope.activeUsers);
+                    console.log("activeUsers: " + $scope.activeUsers);
                 }
 
                 $scope.showChoices = function() {
                     console.log("$scope.showChoices");
+
+                    $scope.activeUsers = game.getActiveUsers();
+                    console.log("vote: " + game.getActiveUsers());
+                    game.setActiveUsers($scope.activeUsers);
 
                     $scope.choices = game.getChoices();
                     $("#gameover").addClass("hide");
@@ -334,6 +422,7 @@
                     $("#answer").removeClass("hide");
                     $("#lie").addClass("hide");
                     $("#options_container").addClass("hide");
+                    $("#users").removeClass("hide");
                 }
 
                 $scope.showGameOver = function() {

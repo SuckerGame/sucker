@@ -14,8 +14,11 @@ var Game = function(user, gameObject, maxNumRounds) {
     that = this;
     this.user = user;
     this.game = gameObject;
+    console.log("users:");
+    console.log(gameObject.users);
 
     if (!gameObject.users) {
+        console.log("deleting current users");
         gameObject.users = {};
     }
 
@@ -31,12 +34,22 @@ var Game = function(user, gameObject, maxNumRounds) {
         gameObject.round = -1;
     }
 
+    if (!gameObject.activeUsers) {
+        gameObject.activeUsers = 0;
+    }
+
+    if (!gameObject.leftoverTime) {
+        gameObject.leftoverTime = 0;
+    }
+
     this.users = gameObject.users;
     this.round = gameObject.round;
-    this.users = gameObject.users;
     this.state = gameObject.state;
+    this.times = gameObject.times;
     this.questions = [];
     this.stateCallbacks = [];
+    this.activeUsers = gameObject.activeUsers;
+    this.leftoverTime = gameObject.leftoverTime;
 
     this.game.$save();
 }
@@ -73,6 +86,16 @@ Game.prototype.setTimes = function(times) {
     this.game.$save();
 }
 
+Game.prototype.setActiveUsers = function(activeUsers) {
+    this.game.activeUsers = activeUsers;
+    this.game.$save();
+}
+
+Game.prototype.setLeftoverTime = function(leftoverTime) {
+    this.game.leftoverTime = leftoverTime;
+    this.game.$save();
+}
+
 /**
  * @param currentTime The current time (using Date.getTime()).
  * @return Number of seconds left until the next state.
@@ -81,7 +104,7 @@ Game.prototype.update = function(currentTime) {
     var times = Object.keys(this.game.times);
     var closestTime = times[0];
     var minDiff = currentTime - closestTime;
-    
+
     var length = times.length;
     for (var i = 0; i < length; ++i) {
         var diff = currentTime - times[i];
@@ -95,6 +118,8 @@ Game.prototype.update = function(currentTime) {
     if (this.state != newstate) {
         this.state = this.game.state = this.game.times[closestTime].state;
         this.round = this.game.round = this.game.times[closestTime].round;
+        //this.game.activeUsers = this.activeUsers;
+        //this.game.leftoverTime = this.leftoverTime;
         this.game.$save();
         this.stateCallbacks[this.game.state]();
     }
@@ -117,11 +142,11 @@ Game.prototype.setQuestions = function(questions) {
         this.questions[i].Q = questionKey;
 
         if (!this.game.questions) {
-            this.game.questions = {};            
+            this.game.questions = {};
         }
 
         if (!this.game.questions[questionKey]) {
-            this.game.questions[questionKey] = 
+            this.game.questions[questionKey] =
                 {"choices": {"computer": question.A}};
         }
     }
@@ -144,10 +169,18 @@ Game.prototype.getAnswer = function() {
 
 /*
  * TODO: Hacked
- */ 
+ */
 Game.prototype.getChoices = function() {
     // console.log(this.game.questions[this.questions[this.round].Q]);
     return this.game.questions[this.questions[this.round].Q].choices;
+}
+
+Game.prototype.getActiveUsers = function() {
+    return this.game.activeUsers;
+}
+
+Game.prototype.getLeftoverTime = function() {
+    return this.game.leftoverTime;
 }
 
 Game.prototype.addPoints = function(points) {
