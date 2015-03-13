@@ -172,8 +172,16 @@ Game.prototype.getLeftoverTime = function() {
     return this.game.leftoverTime;
 }
 
+// Gives points to the user for choosing the correct answer
 Game.prototype.addPoints = function(points) {
     this.game.users[this.user] += points;
+    this.game.$save();
+    return this.game.users;
+}
+
+// User chose a lie so awards points to the user that created the lie
+Game.prototype.addLiePoints = function(user, points) {
+    this.game.users[user] += points;
     this.game.$save();
     return this.game.users;
 }

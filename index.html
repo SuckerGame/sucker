@@ -23,8 +23,9 @@
 
         <div id="join" class="hide">
             <div id="login">
-                <input type="text" ng-model='input_lobby_code' placeholder="Enter lobby code"/>
-                <input type="button" value="Join" ng-click="joinGame()"/>
+                <input id="usernameInput" type="text" ng-model='inputUsername' placeholder="Enter username"/>
+                <input id="gameIDInput" type="text" ng-model='inputGameID' placeholder="Enter game ID"/>
+                <input type="button" value="Join" ng-click="storeGameID()"/>
             </div>
         </div>
 
@@ -33,8 +34,8 @@
             <img src="http://blog.flamingtext.com/blog/2015/03/09/flamingtext_com_1425864309_282458501.png" border="0" alt="Logo Design by FlamingText.com" title="Logo Design by FlamingText.com">
             <br>
             <br>
-            <input class="gameButton" type="button" value="Create Game" ng-click="createGame()"/>
-            <input class="gameButton" type="button" value="Join Game" ng-click="joinGame()"/>
+            <input class="gameButton" type="button" value="Create Game" ng-click="showLobby()"/>
+            <input class="gameButton" type="button" value="Join Game" ng-click="showJoin()"/>
         </div>
 
         <div id="login" class="hide">
@@ -60,8 +61,7 @@
                 <br><br>
             </div>
 
-            <input type="text" ng-model='input_username' placeholder="Enter username"/>
-            <input type="button" value="Enter" ng-click=""/>
+            <input id="usernameInput" type="text" ng-model='inputUsername' placeholder="Enter username" ng-keydown="enterUsername($event)"/>
         </div>
 
         <div id="app" class="init example-chat l-demo-container hide">
@@ -134,7 +134,7 @@
             // }
         }
 
-        var testGameID = "-JhWr1YifZ_GoNuUE1ig";
+        var testGameID;
         var username;
         showLogin(true);
 
@@ -148,7 +148,6 @@
         //         showLogin(false);
         //     }
         // }
-        username = "" + new Date().getTime() + "XYZ";
 
         var game;
 
@@ -160,11 +159,20 @@
         myApp.controller('MyController', ['$scope', '$firebase',
             function($scope, $firebase) {
                 var addPoints = 0;
+                var addLiePoints = 0;
 
+                //username = "Guest";
                 $scope.username = username;
                 var sucker = new Firebase("https://sucker.firebaseio.com");
+                $scope.users = {};
 
                 var update = function() {
+                    if (game) {
+                        $scope.$apply(function() {
+                            // this will update the bindings
+                            $scope.users = game.game.users;
+                        });
+                    }
                     if (game && game.game.state != Game.State.PREGAME) {
                         if (firstTime) {
                             $scope.showGame();
@@ -198,7 +206,7 @@
                 }
 
                 $scope.createGame = function() {
-                    $scope.showLobby();
+                    //$scope.showLobby();
 
                     var gameReference = sucker.child("game");
                     var newGame = gameReference.push({
@@ -212,6 +220,7 @@
                     var id = newGame.path.u[1];
                     var ref = new Firebase("https://sucker.firebaseio.com/game/" + id);
                     $scope.game = $firebase(ref).$asObject();
+
                     game = new Game(username, $scope.game, 4, {
                         "PREGAME" : $scope.showWaiting,
                         "STARTED" : $scope.showWaiting,
@@ -236,6 +245,17 @@
                             game.setQuestions(questions);
                         }
                     );
+                }
+
+                $scope.storeGameID = function() {
+                    if ($scope.inputUsername && $scope.inputGameID) {
+                        username = $scope.inputUsername;
+                        $scope.inputUsername = "";
+                        testGameID = $scope.inputGameID;
+                        $scope.inputGameID = "";
+                        $("#join").addClass("hide");
+                        $scope.joinGame();
+                    }
                 }
 
                 $scope.joinGame = function() {
@@ -349,6 +369,15 @@
                     }
                 }
 
+                $scope.enterUsername = function(e) {
+                    if (e.keyCode === 13 && $scope.inputUsername) {
+                        username = $scope.inputUsername;
+                        $scope.inputUsername = "";
+                        $scope.createGame();
+                        $("#usernameInput").addClass("hide");
+                    }
+                }
+
                 $scope.showWaiting = function() {
                     console.log("waiting...");
                     $("#gameover").addClass("hide");
@@ -380,10 +409,33 @@
                 }
 
                 $scope.vote = function(e) {
+                    // If player chooses the truth
                     if (game.getAnswer() == e.choice) {
                         addPoints = 100;
                     }
+                    else {
+                        // If player chooses someone's lie
+                        var usersArr = Object.getOwnPropertyNames($scope.users);
+
+                        for (var i = 0; i < usersArr.length; i++) {
+                            if ($scope.choices[usersArr[i]] == e.choice) {
+                                addLiePoints = 50;
+                                $scope.users = game.addLiePoints(usersArr[i], addLiePoints);
+                                addLiePoints = 0;
+                            }
+                        }
+                    }
+
                     $scope.showWaiting();
+                }
+
+                $scope.showJoin = function() {
+                    $("#join").removeClass("hide");
+                    $("#pregame").addClass("hide");
+                    $('#lobby').removeClass('init');
+                    $("#gameover").addClass("hide");
+                    $("#app").removeClass("hide");
+                    $("#waiting").addClass("hide");
                 }
 
                 $scope.showResults = function() {
