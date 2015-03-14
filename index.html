@@ -60,7 +60,7 @@
                         <br>
                         <a href="#create" class="jumplink"><input class="gameButton" type="button" value="Create Game" ng-click="showLobby()"/></a>
                         <a href="#join" class="jumplink"><input class="gameButton" type="button" value="Join Game" ng-click="showJoin()"/></a>
-                        <a href="#info" class="jumplink"><input class="gameButton" type="button" value="Info" ng-click=")"/></a>
+                        <a href="#info" class="jumplink"><input class="gameButton" type="button" value="Info" ng-click=""/></a>
                     </div>   
                 </article>
 
@@ -414,7 +414,8 @@
                 $scope.enterLie = function(e) {
                     if (e.keyCode === 13 && $scope.inputLie) {
                         $scope.choices = game.getChoices();
-                        $scope.choices[username] = $scope.inputLie;
+                        var str = $scope.inputLie;
+                        $scope.choices[username] = str.toUpperCase();
                         $scope.game.$save();
                         $scope.inputLie = "";
                         $scope.showWaiting();
