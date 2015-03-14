@@ -511,8 +511,8 @@
 
 .center{
   text-align:center;
-  padding-top:100px;
-  padding-bottom: 100px
+  padding-top:50px;
+  padding-bottom: 10px
 }
 
 #displayLies {
@@ -626,28 +626,25 @@ input[type="button"]:hover {
   display: none;
 }
 
-.lobby {
-  width: 900px;
-  margin: 40px auto 0px auto;
-}
-
 .players {  
+  position: relative;
   width: 300px;
   height: 400px;
   max-height: 400px;
   float: right;
-  border-left-style: solid;
-  border-left-width: medium;
+  border-style: solid;
+  border-width: medium;
 
 }
 
 .welcome {
-  width: 600px;
+  position:relative;
+  width: 450px;
   height: 400px;
   max-height: 400px;
   float: left;
-
-
+    border-style: solid;
+  border-width: medium;
 }
 
 .footer {
@@ -655,6 +652,7 @@ input[type="button"]:hover {
   bottom: 0;
 
 }
+
 
 .gameButton {
   -moz-box-shadow:inset 0px -3px 7px 0px #29bbff;
