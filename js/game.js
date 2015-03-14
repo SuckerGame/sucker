@@ -1,4 +1,6 @@
 var that; // TODO: :(
+var numQuestions;
+
 
 var DEBUG = true;
 
@@ -125,6 +127,7 @@ Game.prototype.setQuestions = function(questions) {
     this.questions = questions;
     console.log("questions");
     console.log(questions);
+    numQuestions = questions.length;
     for (var i = 0; i < questions.length; ++i) {
         var question = questions[i];
         var questionKey = question.Q.replace(".", "");
