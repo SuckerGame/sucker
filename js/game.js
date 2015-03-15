@@ -114,8 +114,8 @@ Game.prototype.update = function(currentTime) {
     if (this.state != newstate) {
         this.state = this.game.state = this.game.times[closestTime].state;
         this.round = this.game.round = this.game.times[closestTime].round;
-        this.game.activeUsers = this.activeUsers;
-        this.game.leftoverTime = this.leftoverTime;
+        //this.game.activeUsers = this.activeUsers;
+        //this.game.leftoverTime = this.leftoverTime;
         this.game.$save();
         this.stateCallbacks[this.game.state]();
     }
