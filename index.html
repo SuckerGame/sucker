@@ -355,14 +355,13 @@
                                 taken[i] = data[i];
                                 console.log(i + ":" + data[i]);
                             }
-                        });
-
-                        $.getJSON("https://sucker.firebaseio.com/questions.json",
+                            $.getJSON("https://sucker.firebaseio.com/questions.json",
                                 function(moarData, status, xhr) {
                                     for (var j = 0; j < 4; ++j) {
                                         questions[j] = moarData[taken[j]];
                                     }
                                 game.setQuestions(questions, taken);
+                            });
                         });
 
                         $scope.showLobby();
@@ -438,7 +437,7 @@
                     $scope.question = game.getQuestion();
                     $scope.choices = game.getChoices();
                     $scope.activeUsers = game.getActiveUsers();
-                    game.setActiveUsers($scope.activeUsers);
+                    //game.setActiveUsers($scope.activeUsers);
                 }
 
                 $scope.enterLie = function(e) {
@@ -481,7 +480,7 @@
 
                     $scope.activeUsers = game.getActiveUsers();
                     console.log("vote: " + game.getActiveUsers());
-                    game.setActiveUsers($scope.activeUsers);
+                    //game.setActiveUsers($scope.activeUsers);
 
                     $scope.choices = game.getChoices();
                     $("#gameover").addClass("hide");
