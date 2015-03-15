@@ -190,6 +190,7 @@
 
         var testGameID;
         var username;
+        var ref;
         showLogin(true);
 
         // Check if a username exists
@@ -271,7 +272,7 @@
 
                      // TODO: Hacky =\. We just want this game as an object.
                     var id = newGame.path.u[1];
-                    var ref = new Firebase("https://sucker.firebaseio.com/game/" + id);
+                    ref = new Firebase("https://sucker.firebaseio.com/game/" + id);
                     $scope.game = $firebase(ref).$asObject();
 
                     game = new Game(username, $scope.game, 4, {
@@ -324,7 +325,7 @@
                 }
 
                 $scope.joinGame = function() {
-                    var ref = new Firebase("https://sucker.firebaseio.com/game/" + testGameID);
+                    ref = new Firebase("https://sucker.firebaseio.com/game/" + testGameID);
                     $scope.game = $firebase(ref).$asObject();
 
                     $scope.game.$loaded().then(function(data) {
@@ -536,6 +537,7 @@
                     $("#answer").addClass("hide");
                     $("#lie").addClass("hide");
                     $("#options_container").addClass("hide");
+                    ref.remove();
                 }
 
       }]);
