@@ -113,7 +113,7 @@ Game.prototype.update = function(currentTime) {
         this.stateCallbacks[this.game.state]();
     }
 
-    var next = parseInt(closestTime) + 10000;
+    var next = parseInt(closestTime) + 25000;
     var timeTillNextState = Math.floor((next - currentTime) / 1000);
     return timeTillNextState;
 }
