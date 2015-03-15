@@ -363,6 +363,7 @@
                                     }
                                 game.setQuestions(questions, taken);
                         });
+
                         $scope.showLobby();
                        // $("#pregame").addClass("hide");
                        // $("#join").removeClass("hide");
@@ -395,7 +396,7 @@
 
                     $scope.activeUsers = Object.keys($scope.users).length;
                     numUsers = $scope.activeUsers;
-                    console.log("start active users: " + $scope.activeUsers);
+                    console.log("start active users: " + numUsers);
 
                     // for each round
                     // TODO: remove magic numero 4
