@@ -58,8 +58,8 @@
                         <img src="http://blog.flamingtext.com/blog/2015/03/09/flamingtext_com_1425864309_282458501.png" border="0" alt="Logo Design by FlamingText.com" title="Logo Design by FlamingText.com">
                         <br>
                         <br>
-                        <a href="#create" class="jumplink"><input class="gameButton" type="button" value="Create Game" ng-click="showLobby()"/></a>
-                        <a href="#join" class="jumplink"><input class="gameButton" type="button" value="Join Game" ng-click="showJoin()"/></a>
+                        <a href="#create" class="jumplink"><input class="gameButton" type="button" value="Create Game" onclick="window.location.reload()" ng-click="showLobby()"/></a>
+                        <a href="#join" class="jumplink"><input class="gameButton" type="button" value="Join Game" onclick="window.location.reload()" ng-click="showJoin()"/></a>
                         <a href="#info" class="jumplink"><input class="gameButton" type="button" value="Info" ng-click=""/></a>
                     </div>   
                 </article>
@@ -256,6 +256,7 @@
                     $('#lobby').removeClass('init');
                     $("#gameover").addClass("hide");
                     $("#app").removeClass("hide");
+                    $("#app").addClass("init");
                     $("#waiting").addClass("hide");
                 }
 
@@ -316,6 +317,7 @@
 
                 $scope.storeGameID = function() {
                     if ($scope.inputUsername && $scope.inputGameID) {
+                        $("#app")
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
                         testGameID = $scope.inputGameID;
