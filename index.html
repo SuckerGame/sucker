@@ -82,7 +82,7 @@
                             <center>
                                 <h2> Welcome!</h2>
                                 <br>
-                                 <input id="usernameInput" type="text" size= "27" ng-model='inputUsername' placeholder="Please enter username" ng-keydown="enterUsername($event)"/>
+                                 <input class="usernameInput" type="text" size= "27" ng-model='inputUsername' placeholder="Please enter username" ng-keydown="enterUsername($event)"/>
                                  <br><br>
                                 <p>Your invite code is:</p>
                                 <div>{{ game.$id }}</div>
@@ -159,7 +159,7 @@
                         <div class="joingame">
                             <center>
                             <h2>JOIN A GAME</h2><br>
-                            <input id="usernameInput" type="text" ng-model='inputUsername' placeholder="Enter username"/>
+                            <input class="usernameInput" type="text" ng-model='inputUsername' placeholder="Enter username"/>
                             <input id="gameIDInput" type="text" ng-model='inputGameID' placeholder="Enter game ID"/>
                             <br><br>
                             <a href="#create" class="jumplink"><input class="gameButton" type="button" value="Join" ng-click="storeGameID()"/></a>
@@ -455,7 +455,7 @@
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
                         $scope.createGame();
-                        $("#usernameInput").addClass("hide");
+                        $(".usernameInput").addClass("hide");
                     }
                 }
 
