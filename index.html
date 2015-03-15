@@ -206,8 +206,6 @@
 
         var game;
 
-        var numUsers;
-
         var firstTime = true;
 
         var myApp = angular.module("myApp", ["firebase"]);
@@ -243,8 +241,8 @@
                         if($scope.activeUsers == 0) {
                             $scope.leftoverTime += timer * 1000;
                             game.setLeftoverTime($scope.leftoverTime);
-                            console.log("numUsers: " + numUsers);
-                            game.setActiveUsers(numUsers);
+                            console.log("numUsers: " + game.getNumUsers());
+                            game.setActiveUsers(game.getNumUsers());
                         }
                         $("#time").html(Math.max(0, timer));
                     }
@@ -269,7 +267,8 @@
                         users: {username: {points: 0}},
                         activeUsers: 0,
                         leftoverTime: 0,
-                        taken: [0, 0, 0, 0]
+                        taken: [0, 0, 0, 0],
+                        numUsers: 0
                     });
 
                      // TODO: Hacky =\. We just want this game as an object.
@@ -290,6 +289,7 @@
                     $scope.activeUsers = game.activeUsers;
                     $scope.leftoverTime = game.leftoverTime;
                     $scope.taken = game.taken;
+                    $scope.numUsers = game.numUsers;
 
                     $.getJSON("https://sucker.firebaseio.com/questions.json",
                         function(data, status, xhr) {
@@ -344,6 +344,7 @@
                         $scope.activeUsers = game.activeUsers;
                         $scope.leftoverTime = game.leftoverTime;
                         $scope.taken = game.taken;
+                        $scope.numUsers = game.numUsers;
 
                         var questions = [];
                         var taken = [];
@@ -394,9 +395,10 @@
 
                     var times = {};
 
+                    $scope.numUsers = Object.keys($scope.users).length;
                     $scope.activeUsers = Object.keys($scope.users).length;
-                    numUsers = $scope.activeUsers;
-                    console.log("start active users: " + numUsers);
+                    // numUsers = $scope.activeUsers;
+                    // console.log("start active users: " + numUsers);
 
                     // for each round
                     // TODO: remove magic numero 4
@@ -417,6 +419,7 @@
                     times[time] = {state: Game.State.GAMEOVER, round: 4}; // TODO: magic #
                     console.log(times);
                     game.setTimes(times);
+                    game.setNumUsers($scope.numUsers);
                     game.setActiveUsers($scope.activeUsers);
                     console.log("set active users: " + game.getActiveUsers());
                     game.start();
@@ -434,7 +437,7 @@
                     $("#users").addClass("hide");
                     $scope.question = game.getQuestion();
                     $scope.choices = game.getChoices();
-                    //$scope.activeUsers = game.getActiveUsers();
+                    $scope.activeUsers = game.getActiveUsers();
                     //game.setActiveUsers($scope.activeUsers);
                 }
 
@@ -476,7 +479,7 @@
                 $scope.showChoices = function() {
                     console.log("$scope.showChoices");
 
-                    //$scope.activeUsers = game.getActiveUsers();
+                    $scope.activeUsers = game.getActiveUsers();
                     console.log("vote: " + game.getActiveUsers());
                     //game.setActiveUsers($scope.activeUsers);
 

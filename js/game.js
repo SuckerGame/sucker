@@ -45,6 +45,10 @@ var Game = function(user, gameObject, maxNumRounds, stateCallbacks) {
         gameObject.taken = [0, 0, 0, 0];
     }
 
+    if (!gameObject.numUsers) {
+        gameObject.numUsers = 0;
+    }
+
     this.users = gameObject.users;
     this.round = gameObject.round;
     this.state = gameObject.state;
@@ -54,6 +58,7 @@ var Game = function(user, gameObject, maxNumRounds, stateCallbacks) {
     this.activeUsers = gameObject.activeUsers;
     this.leftoverTime = gameObject.leftoverTime;
     this.taken = gameObject.taken;
+    this.numUsers = gameObject.numUsers;
     this.game.state = gameObject.state;
 
     this.game.$save();
@@ -89,6 +94,11 @@ Game.prototype.setActiveUsers = function(activeUsers) {
 
 Game.prototype.setLeftoverTime = function(leftoverTime) {
     this.game.leftoverTime = leftoverTime;
+    this.game.$save();
+}
+
+Game.prototype.setNumUsers = function(numUsers) {
+    this.game.numUsers = numUsers;
     this.game.$save();
 }
 
@@ -180,6 +190,10 @@ Game.prototype.getActiveUsers = function() {
 
 Game.prototype.getLeftoverTime = function() {
     return this.game.leftoverTime;
+}
+
+Game.prototype.getNumUsers = function() {
+    return this.game.numUsers;
 }
 
 // Gives points to the user for choosing the correct answer
