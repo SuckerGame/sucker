@@ -302,7 +302,7 @@
                             var ndx;
                             for (var i = 0; i < 4; ++i) {
                                 ndx = Math.floor(Math.random() * 30);
-                                for(var j = 0; j < i; j++) {
+                                for(var j = 0; j < i; ++j) {
                                     if(taken[j] == ndx) {
                                         ndx = Math.floor(Math.random() * 30);
                                         j = 0;
@@ -345,25 +345,24 @@
                         $scope.leftoverTime = game.leftoverTime;
                         $scope.taken = game.taken;
 
+                        var questions = [];
+                        var taken = [];
                         $.getJSON("https://sucker.firebaseio.com/game/" + testGameID + "/taken.json",
                                     function(data, status, xhr) {
                             // TODO: randomize, but make sure it only gets set *once*
-                            var questions = [];
-                            var taken = [];
                             for (var i = 0; i < 4; ++i) {
                                 taken[i] = data[i];
                                 console.log(i + ":" + data[i]);
                             }
-                            $.getJSON("https://sucker.firebaseio.com/questions.json",
-                                function(data, status, xhr) {
-                                    for (var i = 0; i < 4; ++i) {
-                                        questions[i] = data[taken[i]];
-                                    }
-                                });
-                            //TODO: questions should already be set in create game
-                            game.setQuestions(questions);
                         });
 
+                        $.getJSON("https://sucker.firebaseio.com/questions.json",
+                                function(moarData, status, xhr) {
+                                    for (var j = 0; j < 4; ++j) {
+                                        questions[j] = moarData[taken[j]];
+                                    }
+                                game.setQuestions(questions, taken);
+                        });
                         $scope.showLobby();
                        // $("#pregame").addClass("hide");
                        // $("#join").removeClass("hide");
@@ -408,7 +407,7 @@
                         time += 25000;
                         times[time] = {state: Game.State.VOTE, round: round};
 
-                        time += 10000;
+                        time += 25000;
                         times[time] = {state: Game.State.DISPLAY_RESULTS, round: round};
                     }
 
