@@ -109,7 +109,7 @@
                         <div id="waiting" class="hide">
                             Waiting for other players...
                           <div>
-                            <svg width="70" height="20">
+                            <svg fill="#76daff" width="70" height="20">
                               <rect width="20" height="20" x="0" y="0" rx="3" ry="3">
                                 <animate attributeName="width" values="0;20;20;20;0" dur="1000ms" repeatCount="indefinite"/>
                                 <animate attributeName="height" values="0;20;20;20;0" dur="1000ms" repeatCount="indefinite"/>
@@ -291,8 +291,21 @@
                         function(data, status, xhr) {
                             // TODO: randomize, but make sure it only gets set *once*
                             var questions = [];
+                            // for (var i = 0; i < 4; ++i) {
+                            //     questions[i] = data[i];
+                            // }
+                            var taken = [];
+                            var ndx;
                             for (var i = 0; i < 4; ++i) {
-                                questions[i] = data[i];
+                                ndx = Math.floor(Math.random() * 30);
+                                for(var j = 0; j < i; j++) {
+                                    if(taken[j] == ndx) {
+                                        ndx = Math.floor(Math.random() * 30);
+                                        j = 0;
+                                    }
+                                }
+                                questions[i] = data[ndx];
+                                taken[i] = ndx;
                             }
 
                             game.setQuestions(questions);
@@ -330,8 +343,21 @@
                         $.getJSON("https://sucker.firebaseio.com/questions.json", function(data, status, xhr) {
                             // TODO: randomize, but make sure it only gets set *once*
                             var questions = [];
+                            // for (var i = 0; i < 4; ++i) {
+                            //     questions[i] = data[i];
+                            // }
+                            var taken = [];
+                            var ndx;
                             for (var i = 0; i < 4; ++i) {
-                                questions[i] = data[i];
+                                ndx = Math.floor(Math.random() * 30);
+                                for(var j = 0; j < i; j++) {
+                                    if(taken[j] == ndx) {
+                                        ndx = Math.floor(Math.random() * 30);
+                                        j = 0;
+                                    }
+                                }
+                                questions[ndx] = data[ndx];
+                                taken[i] = ndx;
                             }
                             //TODO: questions should already be set in create game
                             game.setQuestions(questions);
@@ -375,18 +401,18 @@
                     // TODO: remove magic numero 4
                     for (var round = 0; round < 4; ++round) {
                         console.log("check");
-                        if (round) {time += 10000;}
+                        if (round) {time += 25000;}
                         times[time] = {state: Game.State.INPUT_LIE, round: round};
 
-                        time += 10000;
+                        time += 25000;
                         times[time] = {state: Game.State.VOTE, round: round};
 
-                        time += 10000;
+                        time += 25000;
                         times[time] = {state: Game.State.DISPLAY_RESULTS, round: round};
                     }
 
                     // GAMEOVER
-                    time += 10000;
+                    time += 25000;
                     times[time] = {state: Game.State.GAMEOVER, round: 4}; // TODO: magic #
                     console.log(times);
                     game.setTimes(times);
