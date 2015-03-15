@@ -41,6 +41,10 @@ var Game = function(user, gameObject, maxNumRounds, stateCallbacks) {
         gameObject.leftoverTime = 0;
     }
 
+    if (!gameObject.taken) {
+        gameObject.taken = [0, 0, 0, 0];
+    }
+
     this.users = gameObject.users;
     this.round = gameObject.round;
     this.state = gameObject.state;
@@ -49,6 +53,7 @@ var Game = function(user, gameObject, maxNumRounds, stateCallbacks) {
     this.stateCallbacks = stateCallbacks;
     this.activeUsers = gameObject.activeUsers;
     this.leftoverTime = gameObject.leftoverTime;
+    this.taken = gameObject.taken;
     this.game.state = gameObject.state;
 
     this.game.$save();
@@ -123,8 +128,9 @@ Game.prototype.update = function(currentTime) {
 /*
  * @param questions An array of question data.
  */
-Game.prototype.setQuestions = function(questions) {
+Game.prototype.setQuestions = function(questions, taken) {
     this.questions = questions;
+    this.taken = taken;
     console.log("questions");
     console.log(questions);
     numQuestions = questions.length;
@@ -141,6 +147,7 @@ Game.prototype.setQuestions = function(questions) {
             this.game.questions[questionKey] =
                 {"choices": {"computer": question.A}};
         }
+        this.game.taken[i] = taken[i];
     }
     this.game.$save();
 }

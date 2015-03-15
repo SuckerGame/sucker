@@ -268,7 +268,8 @@
                         round: -1,
                         users: {username: {points: 0}},
                         activeUsers: 0,
-                        leftoverTime: 0
+                        leftoverTime: 0,
+                        taken: [0, 0, 0, 0]
                     });
 
                      // TODO: Hacky =\. We just want this game as an object.
@@ -288,6 +289,7 @@
                     $scope.users = game.users;
                     $scope.activeUsers = game.activeUsers;
                     $scope.leftoverTime = game.leftoverTime;
+                    $scope.taken = game.taken;
 
                     $.getJSON("https://sucker.firebaseio.com/questions.json",
                         function(data, status, xhr) {
@@ -310,9 +312,8 @@
                                 taken[i] = ndx;
                             }
 
-                            game.setQuestions(questions);
-                        }
-                    );
+                            game.setQuestions(questions, taken);
+                    });
                 }
 
                 $scope.storeGameID = function() {
@@ -342,26 +343,23 @@
                         $scope.users = game.users;
                         $scope.activeUsers = game.activeUsers;
                         $scope.leftoverTime = game.leftoverTime;
+                        $scope.taken = game.taken;
 
-                        $.getJSON("https://sucker.firebaseio.com/questions.json", function(data, status, xhr) {
+                        $.getJSON("https://sucker.firebaseio.com/game/" + testGameID + "/taken.json",
+                                    function(data, status, xhr) {
                             // TODO: randomize, but make sure it only gets set *once*
                             var questions = [];
-                            // for (var i = 0; i < 4; ++i) {
-                            //     questions[i] = data[i];
-                            // }
                             var taken = [];
-                            var ndx;
                             for (var i = 0; i < 4; ++i) {
-                                ndx = Math.floor(Math.random() * 30);
-                                for(var j = 0; j < i; j++) {
-                                    if(taken[j] == ndx) {
-                                        ndx = Math.floor(Math.random() * 30);
-                                        j = 0;
-                                    }
-                                }
-                                questions[ndx] = data[ndx];
-                                taken[i] = ndx;
+                                taken[i] = data[i];
+                                console.log(i + ":" + data[i]);
                             }
+                            $.getJSON("https://sucker.firebaseio.com/questions.json",
+                                function(data, status, xhr) {
+                                    for (var i = 0; i < 4; ++i) {
+                                        questions[i] = data[taken[i]];
+                                    }
+                                });
                             //TODO: questions should already be set in create game
                             game.setQuestions(questions);
                         });
