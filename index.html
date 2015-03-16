@@ -133,6 +133,7 @@
                         </div>
 
                         <div id="answer" class="hide">
+                            You chose: <strong id="choiceId"></strong><br>
                             The correct answer is: <strong>{{ answer }}</strong>
                             <hr/>
                         </div>
@@ -519,6 +520,7 @@
                         }
                     }
 
+                    document.getElementById("choiceId").innerHTML = e.choice;
                     $scope.showWaiting();
                 }
 
