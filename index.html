@@ -434,9 +434,9 @@
                     $("#lie").removeClass("hide");
                     $("#options_container").addClass("hide");
                     $("#users").addClass("hide");
+                    $scope.activeUsers = game.getNumUsers();
                     $scope.question = game.getQuestion();
                     $scope.choices = game.getChoices();
-                    $scope.activeUsers = game.getNumUsers();
                     //game.setActiveUsers($scope.activeUsers);
                 }
 
