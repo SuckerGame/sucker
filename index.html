@@ -434,7 +434,7 @@
                     $("#lie").removeClass("hide");
                     $("#options_container").addClass("hide");
                     $("#users").addClass("hide");
-                    $scope.activeUsers = game.getNumUsers();
+                    $scope.activeUsers = game.getActiveUsers();
                     $scope.question = game.getQuestion();
                     $scope.choices = game.getChoices();
                     //game.setActiveUsers($scope.activeUsers);
@@ -478,7 +478,7 @@
                 $scope.showChoices = function() {
                     console.log("$scope.showChoices");
 
-                    $scope.activeUsers = game.getNumUsers();
+                    $scope.activeUsers = game.getActiveUsers();
                     console.log("vote: " + game.getActiveUsers());
                     //game.setActiveUsers($scope.activeUsers);
 
