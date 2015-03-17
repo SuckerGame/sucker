@@ -82,7 +82,7 @@
                             <center>
                                 <h2> Welcome!</h2>
                                 <br>
-                                 <input class="usernameInput" type="text" size= "27" ng-model='inputUsername' placeholder="Please enter username" ng-keydown="enterUsername($event)"/>
+                                 <input id = "username" class="usernameInput" type="text" size= "27" ng-model='inputUsername' placeholder="Please enter username" ng-keydown="enterUsername($event)"/>
                                  <br><br>
                                 <p>Your invite code is:</p>
                                 <div>{{ game.$id }}</div>
@@ -147,7 +147,7 @@
                         </ul>
 
                         <footer>
-                            <input id="lie" ng-model='inputLie' ng-keydown="enterLie($event)" type='text' id='messageInput'  placeholder='Type a lie...' class="hide">
+                            <input id="lie" ng-model='inputLie' ng-keydown="enterLie($event)" type='text' placeholder='Type a lie...' class="hide">
                             <div>
                                 Timer: <span id="time">10</span>
                             </div>
@@ -319,7 +319,7 @@
 
                 $scope.storeGameID = function() {
                     if ($scope.inputUsername && $scope.inputGameID) {
-                        $("#app")
+                        $("#username").addClass("hide");
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
                         testGameID = $scope.inputGameID;
