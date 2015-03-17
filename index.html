@@ -208,7 +208,7 @@
             // }
         }
 
-        var testGameID;
+        var joinGameId;
         var username;
         var ref;
         showLogin(true);
@@ -332,18 +332,18 @@
 
                 $scope.storeGameID = function() {
                     if ($scope.inputUsername && $scope.inputGameID) {
-                        document.getElementById("username").disabled = true; 
-                        document.getElementById("startButton").disabled = false; 
+                        $("#username").disabled = true; 
+                        $("#startButton").disabled = false; 
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
-                        testGameID = $scope.inputGameID;
+                        joinGameId = $scope.inputGameID;
                         $scope.inputGameID = "";
                         $scope.joinGame();
                     }
                 }
 
                 $scope.joinGame = function() {
-                    ref = new Firebase("https://sucker.firebaseio.com/game/" + testGameID);
+                    ref = new Firebase("https://sucker.firebaseio.com/game/" + joinGameId);
                     $scope.game = $firebase(ref).$asObject();
 
                     $scope.game.$loaded().then(function(data) {
@@ -363,7 +363,7 @@
 
                         var questions = [];
                         var taken = [];
-                        $.getJSON("https://sucker.firebaseio.com/game/" + testGameID + "/taken.json",
+                        $.getJSON("https://sucker.firebaseio.com/game/" + joinGameId + "/taken.json",
                                     function(data, status, xhr) {
                             // TODO: randomize, but make sure it only gets set *once*
                             for (var i = 0; i < 4; ++i) {
@@ -461,7 +461,7 @@
                         var answer = game.getAnswer();
                         if(answer.indexOf(str) != -1)
                         {
-                            document.getElementById("lie").value = "";
+                            $("#lie").value = "";
                             alert("Congrats! You input the correct answer.  Please enter another lie.");
                         }
                         else
@@ -472,16 +472,16 @@
                         }
                     }
 
-                    document.getElementById("choiceId").innerHTML = "";
+                    $("#choiceId").innerHTML = "";
                 }
 
                 $scope.enterUsername = function(e) {
                     if (e.keyCode === 13 && $scope.inputUsername) {
-                        document.getElementById("startButton").disabled = false;    
+                        $("#startButton").disabled = false;    
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
                         $scope.createGame();
-                        document.getElementById("username").disabled = true; 
+                        $("#username").disabled = true; 
                     }
                 }
 
@@ -530,7 +530,7 @@
                         }
                     }
 
-                    document.getElementById("choiceId").innerHTML = e.choice;
+                    $("#choiceId").innerHTML = e.choice;
                     $scope.showWaiting();
                 }
 
