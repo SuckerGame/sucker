@@ -564,7 +564,10 @@
                         ref.remove();
                     }
                     setTimeout(end, 25000);
-                    clearInterval(stopUpdate);
+                    function afterEnd() {
+                        clearInterval(stopUpdate);
+                    }
+                    setTimeout(afterEnd, 25000);
                 }
 
       }]);
