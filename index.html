@@ -453,6 +453,7 @@
                     $scope.question = game.getQuestion();
                     $scope.choices = game.getChoices();
                     //game.setActiveUsers($scope.activeUsers);
+                    document.getElementById("choiceId").innerHTML = "";
                 }
 
                 $scope.enterLie = function(e) {
@@ -471,8 +472,6 @@
                             $scope.showWaiting();
                         }
                     }
-
-                    document.getElementById("choiceId").innerHTML = "";
                 }
 
                 $scope.enterUsername = function(e) {
