@@ -332,8 +332,8 @@
 
                 $scope.storeGameID = function() {
                     if ($scope.inputUsername && $scope.inputGameID) {
-                        $("#username").disabled = true; 
-                        $("#startButton").disabled = false; 
+                        document.getElementById("username").disabled = true; 
+                        document.getElementById("startButton").disabled = false; 
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
                         joinGameId = $scope.inputGameID;
@@ -461,7 +461,7 @@
                         var answer = game.getAnswer();
                         if(answer.indexOf(str) != -1)
                         {
-                            $("#lie").value = "";
+                            document.getElementById("lie").value = "";
                             alert("Congrats! You input the correct answer.  Please enter another lie.");
                         }
                         else
@@ -472,16 +472,16 @@
                         }
                     }
 
-                    $("#choiceId").innerHTML = "";
+                    document.getElementById("choiceId").innerHTML = "";
                 }
 
                 $scope.enterUsername = function(e) {
                     if (e.keyCode === 13 && $scope.inputUsername) {
-                        $("#startButton").disabled = false;    
+                        document.getElementById("startButton").disabled = false;    
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
                         $scope.createGame();
-                        $("#username").disabled = true; 
+                        document.getElementById("username").disabled = true; 
                     }
                 }
 
@@ -530,7 +530,7 @@
                         }
                     }
 
-                    $("#choiceId").innerHTML = e.choice;
+                    document.getElementById("choiceId").innerHTML = e.choice;
                     $scope.showWaiting();
                 }
 
