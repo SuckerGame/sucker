@@ -177,6 +177,11 @@ Game.prototype.getAnswer = function() {
     return this.questions[this.round].A;
 }
 
+Game.prototype.addChoice = function(username, choice) {
+    this.game.questions[this.questions[this.round].Q].choices[username] = choice;
+    this.game.$save();
+}
+
 Game.prototype.getChoices = function() {
     var choices = this.game.questions[this.questions[this.round].Q].choices;
     var choicesMinusMe = {};

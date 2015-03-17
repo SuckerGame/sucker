@@ -251,9 +251,6 @@
                             $scope.showGame();
                             firstTime = false;
                         }
-                        console.log("updating");
-                        console.log("activeUsers: " + game.getActiveUsers());
-                        console.log("leftoverTime: " + game.getLeftoverTime());
                         $scope.activeUsers = game.getActiveUsers();
                         $scope.leftoverTime = game.getLeftoverTime();
                         var timer = game.update((new Date().getTime()) + $scope.leftoverTime);
@@ -261,7 +258,6 @@
                         if($scope.activeUsers == 0) {
                             $scope.leftoverTime += timer * 1000;
                             game.setLeftoverTime($scope.leftoverTime);
-                            console.log("numUsers: " + game.getNumUsers());
                             game.setActiveUsers(game.getNumUsers());
                         }
                         $("#time").html(Math.max(0, timer));
@@ -430,7 +426,7 @@
                         time += 25000;
                         times[time] = {state: Game.State.VOTE, round: round};
 
-                        time += 10000;
+                        time += 25000;
                         times[time] = {state: Game.State.DISPLAY_RESULTS, round: round};
                     }
 
@@ -472,9 +468,7 @@
                         }
                         else
                         {
-                            $scope.choices = game.getChoices();
-                            $scope.choices[username] = str;
-                            $scope.game.$save();
+                            game.addChoice(username, str);
                             $scope.inputLie = "";
                             $scope.showWaiting();
                         }
@@ -530,7 +524,6 @@
                     else {
                         // If player chooses someone's lie
                         var usersArr = Object.getOwnPropertyNames($scope.users);
-
                         for (var i = 0; i < usersArr.length; i++) {
                             if ($scope.choices[usersArr[i]] == e.choice) {
                                 addLiePoints = 50;
