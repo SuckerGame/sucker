@@ -87,10 +87,9 @@ Game.prototype.setTimes = function(times) {
     this.game.$save();
 }
 
-Game.prototype.updateActiveUsers = function() {
-    this.game.activeUsers -= 1;
+Game.prototype.setActiveUsers = function(activeUsers) {
+    this.game.activeUsers = activeUsers;
     this.game.$save();
-    return this.game.activeUsers;
 }
 
 Game.prototype.setLeftoverTime = function(leftoverTime) {

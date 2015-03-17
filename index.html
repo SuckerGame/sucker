@@ -458,7 +458,9 @@
                     $("#lie").addClass("hide");
                     $("#options_container").addClass("hide");
 
-                    $scope.activeUsers = game.updateActiveUsers();
+                    $scope.activeUsers = game.getActiveUsers();
+                    $scope.activeUsers--;
+                    game.setActiveUsers($scope.activeUsers);
                     console.log("activeUsers: " + $scope.activeUsers);
                 }
 
