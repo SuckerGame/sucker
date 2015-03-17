@@ -46,7 +46,7 @@
             <nav id="nav">
                 <a href="#me" class="icon fa-home active"><span>Home</span></a>
                 <a href="#create" class="icon fa-plus-circle"><span>Create</span></a>
-                <a href="#join" class="icon fa-user"><span>Join</span></a>
+                <a id="joinIcon" href="#join" class="icon fa-user"><span>Join</span></a>
                 <a href="#info" class="icon fa-info-circle"><span>Info</span></a>
             </nav>
 
@@ -164,6 +164,7 @@
                         <div class="joingame">
                             <center>
                             <h2>JOIN A GAME</h2><br>
+                            <p id="inviteText" class="hide">You have been invited to join a game! Please confirm by typing in the following code: <strong id="inviteCode"></strong></p>
                             <input class="usernameInput" type="text" ng-model='inputUsername' placeholder="Enter username"/>
                             <input id="gameIDInput" type="text" ng-model='inputGameID' placeholder="Enter game ID"/>
                             <br><br>
@@ -199,20 +200,39 @@
        </div>
 
    <script>
-
-        var joinGameId;
+        var joinGameID;
         var username;
         var ref;
-
         var game;
-
         var firstTime = true;
+
+        var params = {}, queryString = location.hash.substring(1),
+                          regex = /([^&=]+)=([^&]*)/g, m;
+                    
+        while (m = regex.exec(queryString)) {
+            params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+        }
 
         var myApp = angular.module("myApp", ["firebase"]);
         myApp.controller('MyController', ['$scope', '$firebase',
             function($scope, $firebase) {
 
-                //username = "Guest";
+                $scope.setGameID = function(gameId) {
+                    angular.element(document).ready(function () {
+                        $scope.inputGameID = gameId;
+                        console.log("yaskks");
+                    });
+                }
+
+                if (params['gameID']) { // eg sucker/index.html#&gameID=yolo
+                    joinGameId = params['gameID'];
+                    $(document).ready(function() {
+                        $("#joinIcon")[0].click();
+                        $("#inviteText").removeClass("hide");
+                        $("#inviteCode").html(params['gameID']);
+                    });
+                }
+
                 $scope.username = username;
                 var sucker = new Firebase("https://sucker.firebaseio.com");
                 $scope.users = {};
@@ -250,8 +270,13 @@
                     $("#app").removeClass("hide");
                     $("#app").addClass("init");
                     $("#waiting").addClass("hide");
-                    $("#loggedIn").addClass("hide");
-                    $("#notLoggedIn").removeClass("hide");
+                    if (username) {
+                        $("#loggedIn").removeClass("hide");
+                        $("#notLoggedIn").addClass("hide");
+                    } else {
+                        $("#loggedIn").addClass("hide");
+                        $("#notLoggedIn").removeClass("hide");
+                    }
                 }
 
                 $scope.getAndSetQuestions = function() {
@@ -314,21 +339,27 @@
                     $scope.getAndSetQuestions();
                 }
 
-
                 $scope.storeGameID = function() {
                     if ($scope.inputUsername && $scope.inputGameID) {
                         $("#username").addClass("hide");
                         $("#startButton").removeClass("hide");
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
-                        joinGameId = $scope.inputGameID;
+                        joinGameID = $scope.inputGameID;
                         $scope.inputGameID = "";
                         $scope.joinGame();
+                        if (username) {
+                            $("#loggedIn").removeClass("hide");
+                            $("#notLoggedIn").addClass("hide");
+                        } else {
+                            $("#loggedIn").addClass("hide");
+                            $("#notLoggedIn").removeClass("hide");
+                        }
                     }
                 }
 
                 $scope.joinGame = function() {
-                    ref = new Firebase("https://sucker.firebaseio.com/game/" + joinGameId);
+                    ref = new Firebase("https://sucker.firebaseio.com/game/" + joinGameID);
                     $scope.game = $firebase(ref).$asObject();
 
                     $scope.game.$loaded().then(function(data) {
@@ -347,10 +378,8 @@
                         $scope.numUsers = game.numUsers;
 
                         if (!$scope.taken) {
-                            console.log("YORO IF  $scope.getAndSet...");
                             $scope.getAndSetQuestions();
                         } else {
-                            console.log("YORO ELSE...");
                             var questions = [];
                             $.getJSON("https://sucker.firebaseio.com/questions.json",
                                 function(moarData, status, xhr) {
@@ -455,8 +484,13 @@
                         $("#username").addClass("hide");
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
-                        $("#notLoggedIn").addClass("hide");
-                        $("#loggedIn").removeClass("hide");
+                        if (username) {
+                            $("#loggedIn").removeClass("hide");
+                            $("#notLoggedIn").addClass("hide");
+                        } else {
+                            $("#loggedIn").addClass("hide");
+                            $("#notLoggedIn").removeClass("hide");
+                        }
                         $scope.createGame();
                     }
                 }
