@@ -338,21 +338,12 @@
                         $scope.numUsers = game.numUsers;
 
                         var questions = [];
-                        var taken = [];
-                        $.getJSON("https://sucker.firebaseio.com/game/" + joinGameId + "/taken.json",
-                                    function(data, status, xhr) {
-                            // TODO: randomize, but make sure it only gets set *once*
-                            for (var i = 0; i < 4; ++i) {
-                                taken[i] = data[i];
-                                console.log(i + ":" + data[i]);
-                            }
-                            $.getJSON("https://sucker.firebaseio.com/questions.json",
-                                function(moarData, status, xhr) {
-                                    for (var j = 0; j < 4; ++j) {
-                                        questions[j] = moarData[taken[j]];
-                                    }
-                                game.setQuestions(questions, taken);
-                            });
+                        $.getJSON("https://sucker.firebaseio.com/questions.json",
+                            function(moarData, status, xhr) {
+                                for (var j = 0; j < 4; ++j) {
+                                    questions[j] = moarData[$scope.taken[j]];
+                                }
+                            game.setQuestions(questions, $scope.taken);
                         });
 
                         $scope.showLobby();
@@ -372,7 +363,6 @@
                     $("#startButton").addClass("hide");
                     $("#waiting").addClass("hide");
                 }
-
 
                 $scope.startGame = function() {
                     console.log("Starting game..");

@@ -147,7 +147,13 @@ Game.prototype.setQuestions = function(questions, taken) {
     numQuestions = questions.length;
     for (var i = 0; i < questions.length; ++i) {
         var question = questions[i];
-        var questionKey = question.Q.replace(".", "");
+        var questionKey = question.Q
+            .replace(".", "")
+            .replace("#", "")
+            .replace("$", "")
+            .replace("/", "")
+            .replace("[", "")
+            .replace("'", "");
         this.questions[i].Q = questionKey;
 
         if (!this.game.questions) {
