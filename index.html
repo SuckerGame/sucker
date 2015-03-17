@@ -108,7 +108,9 @@
                         </div>
                         <div id="gameover" class="hide">
                             GAME OVER.
+                            <input class="gameButton" type="button" value="Play Again?" ng-click="playAgain()" />
                         </div>
+
 
                         <div id="waiting" class="hide">
                             Waiting for other players...
@@ -217,13 +219,6 @@
         myApp.controller('MyController', ['$scope', '$firebase',
             function($scope, $firebase) {
 
-                $scope.setGameID = function(gameId) {
-                    angular.element(document).ready(function () {
-                        $scope.inputGameID = gameId;
-                        console.log("yaskks");
-                    });
-                }
-
                 if (params['gameID']) { // eg sucker/index.html#&gameID=yolo
                     joinGameId = params['gameID'];
                     $(document).ready(function() {
@@ -252,7 +247,6 @@
                         $scope.activeUsers = game.getActiveUsers();
                         $scope.leftoverTime = game.getLeftoverTime();
                         var timer = game.update((new Date().getTime()) + $scope.leftoverTime);
-                        console.log(timer);
                         if($scope.activeUsers == 0) {
                             $scope.leftoverTime += timer * 1000;
                             game.setLeftoverTime($scope.leftoverTime);
@@ -421,7 +415,6 @@
                     // for each round
                     // TODO: remove magic numero 4
                     for (var round = 0; round < 4; ++round) {
-                        console.log("check");
                         if (round) {time += 25000;}
                         times[time] = {state: Game.State.INPUT_LIE, round: round};
 
@@ -563,6 +556,19 @@
                     $("#users").removeClass("hide");
                 }
 
+                $scope.playAgain = function() {
+                    game.game.users[username] = 0;
+                    game.game.questions = {};
+                    game.questions = {};
+                    game.game.state = Game.State.PREGAME;
+                    game.game.round = -1;
+                    game.game.activeUsers = 0;
+
+                    $scope.getAndSetQuestions();
+                    setTimeout($scope.startGame, 5000);
+                    $scope.showWaiting();
+                }
+
                 $scope.showGameOver = function() {
                     $("#gameover").removeClass("hide");
                     $("#waiting").addClass("hide");
@@ -570,16 +576,7 @@
                     $("#lie").addClass("hide");
                     $("#options_container").addClass("hide");
                     $("#question").addClass("hide");
-                    function end() {
-                        ref.remove();
-                    }
-                    setTimeout(end, 25000);
-                    function afterEnd() {
-                        clearInterval(stopUpdate);
-                    }
-                    setTimeout(afterEnd, 26000);
                 }
-
       }]);
     </script>
     </body>

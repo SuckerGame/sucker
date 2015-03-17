@@ -130,8 +130,6 @@ Game.prototype.update = function(currentTime) {
 Game.prototype.setQuestions = function(questions, taken) {
     this.questions = questions;
     this.taken = this.game.taken = taken;
-    console.log("questions");
-    console.log(questions);
     numQuestions = questions.length;
     for (var i = 0; i < questions.length; ++i) {
         var question = questions[i];
