@@ -571,7 +571,10 @@
                     $("#answer").addClass("hide");
                     $("#lie").addClass("hide");
                     $("#options_container").addClass("hide");
-                    ref.remove();
+                    function end() {
+                        ref.remove();
+                    }
+                    setTimeout(end, 25000);
                 }
 
       }]);
