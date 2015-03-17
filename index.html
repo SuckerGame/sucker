@@ -319,7 +319,8 @@
 
                 $scope.storeGameID = function() {
                     if ($scope.inputUsername && $scope.inputGameID) {
-                        $("#username").addClass("hide");
+                        document.getElementById("username").disabled = true; 
+                        document.getElementById("startButton").disabled = false; 
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
                         testGameID = $scope.inputGameID;
@@ -468,7 +469,7 @@
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
                         $scope.createGame();
-                        $(".usernameInput").addClass("hide");
+                        document.getElementById("username").disabled = true; 
                     }
                 }
 
