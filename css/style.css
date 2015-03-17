@@ -93,7 +93,7 @@
   
   p, ul, ol, dl, table, blockquote, form
   {
-    margin-bottom: 2em;
+    margin-bottom: 0.5em;
   }
     
   /* Table */
@@ -691,4 +691,4 @@ input[type="button"]:hover {
   background-color:#0688fa;
 }
 
-
+ul li { list-style-type: square; }

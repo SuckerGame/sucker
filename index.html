@@ -80,15 +80,19 @@
 
                         <div class="welcome">
                             <center>
-                                <h2> Welcome!</h2>
-                                <br>
-                                 <input id = "username" class="usernameInput" type="text" size= "27" ng-model='inputUsername' placeholder="Please enter username" ng-keydown="enterUsername($event)"/>
-                                 <br><br>
-                                <p>Your invite code is:</p>
-                                <div>{{ game.$id }}</div>
-                                <div id = "startGame" class = 'footer'>
-                                    <br><br>
-                                    <input id="startButton" class="gameButton" type="button" value="Start Game" ng-click="startGame()"/>
+                                <h2>Welcome!</h2>
+                                <div id="notLoggedIn">
+                                    <br>
+                                     <input id="username" class="usernameInput" type="text" size= "27" ng-model='inputUsername' placeholder="Please enter username" ng-keydown="enterUsername($event)"/>
+                                     <br><br>
+                                 </div>
+                                 <div id="loggedIn" class="hide">
+                                    <p>Your invite code is:</p>
+                                    <div>{{ game.$id }}</div>
+                                    <div id = "startGame" class = 'footer'>
+                                        <br><br>
+                                        <input id="startButton" class="gameButton" type="button" value="Start Game" ng-click="startGame()"/>
+                                    </div>
                                 </div>
                             </center>
                         </div>
@@ -246,6 +250,8 @@
                     $("#app").removeClass("hide");
                     $("#app").addClass("init");
                     $("#waiting").addClass("hide");
+                    $("#loggedIn").addClass("hide");
+                    $("#notLoggedIn").removeClass("hide");
                 }
 
                 $scope.createGame = function() {
@@ -446,6 +452,8 @@
                         $("#username").addClass("hide");
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
+                        $("#notLoggedIn").addClass("hide");
+                        $("#loggedIn").removeClass("hide");
                         $scope.createGame();
                     }
                 }
