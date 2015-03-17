@@ -88,7 +88,7 @@
                                 <div>{{ game.$id }}</div>
                                 <div id = "startGame" class = 'footer'>
                                     <br><br>
-                                    <input id="startButton" class="gameButton" type="button" value="Start Game" ng-click="startGame()" disabled/>
+                                    <input id="startButton" class="gameButton" type="button" value="Start Game" ng-click="startGame()"/>
                                 </div>
                             </center>
                         </div>
@@ -133,7 +133,7 @@
                         </div>
 
                         <div id="answer" class="hide">
-                            You chose: <strong id="choiceId"></strong><br>
+                            You chose: <strong>{{ myChoice }}</strong><br>
                             The correct answer is: <strong>{{ answer }}</strong>
                             <hr/>
                         </div>
@@ -194,35 +194,11 @@
             </div>
        </div>
 
-
-    
-    <!-- MY SHIT -->        
    <script>
-        var showLogin = function(show) {
-            // if (show) {
-            //     $("#login").removeClass("hide");
-            //     $("#app").addClass("hide");
-            // } else {
-            //     $("#login").addClass("hide");
-            //     $("#app").removeClass("hide");
-            // }
-        }
 
         var joinGameId;
         var username;
         var ref;
-        showLogin(true);
-
-        // Check if a username exists
-        // if (document.URL.indexOf(".html") >= 0) {
-        //     username = "LocalUser";
-        //     showLogin(false);
-        // } else {
-        //     username = $.cookie('sucker');
-        //     if (username) {
-        //         showLogin(false);
-        //     }
-        // }
 
         var game;
 
@@ -332,8 +308,8 @@
 
                 $scope.storeGameID = function() {
                     if ($scope.inputUsername && $scope.inputGameID) {
-                        document.getElementById("username").disabled = true; 
-                        document.getElementById("startButton").disabled = false; 
+                        $("#username").addClass("hide");
+                        $("#startButton").removeClass("hide");
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
                         joinGameId = $scope.inputGameID;
@@ -453,7 +429,7 @@
                     $scope.question = game.getQuestion();
                     $scope.choices = game.getChoices();
                     //game.setActiveUsers($scope.activeUsers);
-                    document.getElementById("choiceId").innerHTML = "";
+                    $scope.myChoice = "";
                 }
 
                 $scope.enterLie = function(e) {
@@ -476,11 +452,11 @@
 
                 $scope.enterUsername = function(e) {
                     if (e.keyCode === 13 && $scope.inputUsername) {
-                        document.getElementById("startButton").disabled = false;    
+                        $("#startButton").removeClass("hide");
+                        $("#username").addClass("hide");
                         username = $scope.inputUsername;
                         $scope.inputUsername = "";
                         $scope.createGame();
-                        document.getElementById("username").disabled = true; 
                     }
                 }
 
@@ -529,7 +505,7 @@
                         }
                     }
 
-                    document.getElementById("choiceId").innerHTML = e.choice;
+                    $scope.myChoice = e.choice;
                     $scope.showWaiting();
                 }
 
