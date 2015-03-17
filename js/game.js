@@ -1,19 +1,11 @@
-var that; // TODO: :(
-var numQuestions;
-
-
-var DEBUG = true;
 
 /**
  * Game class models a Sucker game.
- *
- * TODO: Remove dependency on Firebase. (sync is super convenient).
  *
  * @param gameObject Firebase Game object.
  * @constructor
  */
 var Game = function(user, gameObject, maxNumRounds, stateCallbacks) {
-    that = this;
     this.user = user;
     this.game = gameObject;
 
@@ -25,7 +17,7 @@ var Game = function(user, gameObject, maxNumRounds, stateCallbacks) {
         gameObject.users[user] = 0;
     }
 
-    if (DEBUG || !gameObject.state) {
+    if (!gameObject.state) {
         gameObject.state = Game.State.PREGAME;
     }
 
@@ -39,10 +31,6 @@ var Game = function(user, gameObject, maxNumRounds, stateCallbacks) {
 
     if (!gameObject.leftoverTime) {
         gameObject.leftoverTime = 0;
-    }
-
-    if (!gameObject.taken) {
-        gameObject.taken = [0, 0, 0, 0];
     }
 
     if (!gameObject.numUsers) {
@@ -141,7 +129,7 @@ Game.prototype.update = function(currentTime) {
  */
 Game.prototype.setQuestions = function(questions, taken) {
     this.questions = questions;
-    this.taken = taken;
+    this.taken = this.game.taken = taken;
     console.log("questions");
     console.log(questions);
     numQuestions = questions.length;

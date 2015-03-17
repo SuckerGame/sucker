@@ -254,6 +254,31 @@
                     $("#notLoggedIn").removeClass("hide");
                 }
 
+                $scope.getAndSetQuestions = function() {
+                    $.getJSON("https://sucker.firebaseio.com/questions.json",
+                        function(data, status, xhr) {
+                            // TODO: randomize, but make sure it only gets set *once*
+                            var questions = [];
+                            // for (var i = 0; i < 4; ++i) {
+                            //     questions[i] = data[i];
+                            // }
+                            var taken = [];
+                            var ndx;
+                            for (var i = 0; i < 4; ++i) {
+                                ndx = Math.floor(Math.random() * 30);
+                                for(var j = 0; j < i; ++j) {
+                                    if(taken[j] == ndx) {
+                                        ndx = Math.floor(Math.random() * 30);
+                                        j = 0;
+                                    }
+                                }
+                                questions[i] = data[ndx];
+                                taken[i] = ndx;
+                            }
+                            game.setQuestions(questions, taken);
+                    });
+                }
+
                 $scope.createGame = function() {
                     //$scope.showLobby();
 
@@ -286,31 +311,9 @@
                     $scope.leftoverTime = game.leftoverTime;
                     $scope.taken = game.taken;
                     $scope.numUsers = game.numUsers;
-
-                    $.getJSON("https://sucker.firebaseio.com/questions.json",
-                        function(data, status, xhr) {
-                            // TODO: randomize, but make sure it only gets set *once*
-                            var questions = [];
-                            // for (var i = 0; i < 4; ++i) {
-                            //     questions[i] = data[i];
-                            // }
-                            var taken = [];
-                            var ndx;
-                            for (var i = 0; i < 4; ++i) {
-                                ndx = Math.floor(Math.random() * 30);
-                                for(var j = 0; j < i; ++j) {
-                                    if(taken[j] == ndx) {
-                                        ndx = Math.floor(Math.random() * 30);
-                                        j = 0;
-                                    }
-                                }
-                                questions[i] = data[ndx];
-                                taken[i] = ndx;
-                            }
-
-                            game.setQuestions(questions, taken);
-                    });
+                    $scope.getAndSetQuestions();
                 }
+
 
                 $scope.storeGameID = function() {
                     if ($scope.inputUsername && $scope.inputGameID) {
@@ -343,21 +346,21 @@
                         $scope.taken = game.taken;
                         $scope.numUsers = game.numUsers;
 
-                        var questions = [];
-                        $.getJSON("https://sucker.firebaseio.com/questions.json",
-                            function(moarData, status, xhr) {
-                                for (var j = 0; j < 4; ++j) {
-                                    questions[j] = moarData[$scope.taken[j]];
-                                }
-                            game.setQuestions(questions, $scope.taken);
-                        });
-
-                        $scope.showLobby();
-                       // $("#pregame").addClass("hide");
-                       // $("#join").removeClass("hide");
-                       // $("#startButton").addClass("hide");
-                       // $("#createButton").addClass("hide");
-                       // $("#joinButton").addClass("hide");
+                        if (!$scope.taken) {
+                            console.log("YORO IF  $scope.getAndSet...");
+                            $scope.getAndSetQuestions();
+                        } else {
+                            console.log("YORO ELSE...");
+                            var questions = [];
+                            $.getJSON("https://sucker.firebaseio.com/questions.json",
+                                function(moarData, status, xhr) {
+                                    for (var j = 0; j < 4; ++j) {
+                                        questions[j] = moarData[$scope.taken[j]];
+                                    }
+                                game.setQuestions(questions, $scope.taken);
+                                $scope.showLobby();
+                            });
+                        }
                     });
                 }
 
