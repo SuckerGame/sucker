@@ -186,6 +186,7 @@ Game.prototype.getAnswer = function() {
 Game.prototype.addChoice = function(username, choice) {
     this.game.questions[this.questions[this.round].Q].choices[username] = choice;
     this.game.$save();
+    this.questions = this.game.questions;
 }
 
 Game.prototype.getChoices = function() {
