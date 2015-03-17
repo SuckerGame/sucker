@@ -231,8 +231,6 @@
         var myApp = angular.module("myApp", ["firebase"]);
         myApp.controller('MyController', ['$scope', '$firebase',
             function($scope, $firebase) {
-                var addPoints = 0;
-                var addLiePoints = 0;
 
                 //username = "Guest";
                 $scope.username = username;
@@ -474,6 +472,7 @@
                         }
                     }
 
+                    document.getElementById("choiceId").innerHTML = "";
                 }
 
                 $scope.enterUsername = function(e) {
@@ -519,16 +518,14 @@
                 $scope.vote = function(e) {
                     // If player chooses the truth
                     if (game.getAnswer() == e.choice) {
-                        addPoints = 100;
+                        game.addPoints(100);
                     }
                     else {
                         // If player chooses someone's lie
                         var usersArr = Object.getOwnPropertyNames($scope.users);
                         for (var i = 0; i < usersArr.length; i++) {
                             if ($scope.choices[usersArr[i]] == e.choice) {
-                                addLiePoints = 50;
-                                $scope.users = game.addLiePoints(usersArr[i], addLiePoints);
-                                addLiePoints = 0;
+                                $scope.users = game.addLiePoints(usersArr[i], 50);
                             }
                         }
                     }
@@ -546,8 +543,6 @@
 
                 $scope.showResults = function() {
                     console.log("$scope.showResults");
-                    $scope.users = game.addPoints(addPoints);
-                    addPoints = 0;
                     $scope.answer = game.getAnswer();
 
                     $("#gameover").addClass("hide");
