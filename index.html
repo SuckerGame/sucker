@@ -263,7 +263,7 @@
                         $("#time").html(Math.max(0, timer));
                     }
                 }
-                setInterval(update, 5);
+                var stopUpdate = setInterval(update, 5);
 
                 $scope.showLobby = function() {
                     $("#lobby").removeClass("hide");
@@ -569,6 +569,7 @@
                         ref.remove();
                     }
                     setTimeout(end, 25000);
+                    clearInterval(stopUpdate);
                 }
 
       }]);
