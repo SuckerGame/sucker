@@ -177,12 +177,15 @@ Game.prototype.getAnswer = function() {
     return this.questions[this.round].A;
 }
 
-/*
- * TODO: Hacked
- */
 Game.prototype.getChoices = function() {
-    // console.log(this.game.questions[this.questions[this.round].Q]);
-    return this.game.questions[this.questions[this.round].Q].choices;
+    var choices = this.game.questions[this.questions[this.round].Q].choices;
+    var choicesMinusMe = {};
+    for (var user in choices) {
+        if (user != this.user) {
+            choicesMinusMe[user] = choices[user];
+        }
+    }
+    return choicesMinusMe;
 }
 
 Game.prototype.getActiveUsers = function() {
